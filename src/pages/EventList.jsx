@@ -36,12 +36,12 @@ function EventList() {
         className="mb-4 p-2 border border-gray-300 rounded"
       >
         <option value="All">All</option>
-        <option value="CSE">CSE</option>
+        <option value="ECE">ECE</option>
+        <option value="EEE">EEE</option>
         <option value="IT">IT</option>
         <option value="ADS">ADS</option>
         <option value="AIML">AIML</option>
-        <option value="ECE">ECE</option>
-        <option value="EEE">EEE</option>
+        <option value="CSE">CSE</option>
         <option value="Bio-Technology">Bio-Technology</option>
         <option value="Chemical Engineering">Chemical Engineering</option>
         {/* Add more departments as needed */}

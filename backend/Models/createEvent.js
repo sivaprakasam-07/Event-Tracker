@@ -6,11 +6,11 @@ const createEvent = new mongoose.Schema({
         required:true
     },
     date:{
-        type:Date,
+        type:String,
         required:true
     },
     time:{
-        type:Date,
+        type:String,
         required:true
     },
     venue:{
@@ -25,7 +25,7 @@ const createEvent = new mongoose.Schema({
         required:true
     },
     department:{
-        type:[String],
+        type:String,
         required:true
     },
     eligibility:{

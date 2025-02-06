@@ -1,5 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 import EventStats from '../components/EventStats';
+import AddParticipantForm from '../components/AddParticipanttFrom';
 import DepartmentStats from '../components/DepartmentStats';
 import { Link } from 'react-router-dom';
 

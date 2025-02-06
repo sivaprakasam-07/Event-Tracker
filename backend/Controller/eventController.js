@@ -1,7 +1,7 @@
 const CreateEvent = require("../models/createEvent");
 
-const createEvent = async(req,res) => {
-    try{
+const createEvent = async (req, res) => {
+    try {
         const {
             title,
             date,
@@ -23,45 +23,45 @@ const createEvent = async(req,res) => {
             department,
             eligibility
         })
-       
-       
+
+
         await event.save();
-        console.log("Created event", event );
+        console.log("Created event", event);
         res.status(201).json({
-            message:"Created event successfully",
-            sucess:true
+            message: "Created event successfully",
+            success: true
         })
 
     }
-    catch(err){
+    catch (err) {
         console.log(err);
         res.status(500).json({
-            message:"An erroe occured while creating event ",
-            sucess:false
+            message: "An error occured while creating event ",
+            success: false
         })
     }
-} 
+}
 
-const getEvents = async(req,res) =>{
-    try{
-    const events = await CreateEvent.find();
-    if(events.length==0){
-        return res.status(404).json({
-            message:"No surprise bags found",
-            sucess:false
+const getEvents = async (req, res) => {
+    try {
+        const events = await CreateEvent.find();
+        if (events.length == 0) {
+            return res.status(404).json({
+                message: "No surprise bags found",
+                success: false
+            })
+        }
+        res.status(200).json({
+            message: "Fetched bags successfully",
+            success: true,
+            events
         })
     }
-    res.status(200).json({
-        message:"Fetched bags successfully",
-        sucess:true,
-        events
-    })
-    }
-    catch(error){
+    catch (error) {
         console.log(error);
         res.status(500).json({
-            message:"An error occured while fetching the data",
-            success:false
+            message: "An error occured while fetching the data",
+            success: false
         })
     }
 }

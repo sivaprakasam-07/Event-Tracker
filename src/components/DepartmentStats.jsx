@@ -1,31 +1,20 @@
-import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 function DepartmentStats() {
-  const [departmentStats, setDepartmentStats] = useState([]);
-
-  useEffect(() => {
-    const events = JSON.parse(localStorage.getItem('events') || '[]');
-    const stats = events.reduce((acc, event) => {
-      const department = event.department || 'Unknown';
-      if (!acc[department]) {
-        acc[department] = { events: 0, participants: 0 };
-      }
-      acc[department].events += 1;
-      acc[department].participants += event.participants || 0;
-      return acc;
-    }, {});
-
-    setDepartmentStats(Object.entries(stats));
-  }, []);
+  const departments = [
+    'ECE', 'EEE', 'IT', 'ADS', 'AIML', 'CSE', 'Bio-Technology', 'Chemical Engineering'
+  ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      {departmentStats.map(([department, { events, participants }]) => (
-        <div key={department} className="bg-white p-6 rounded-lg shadow-md">
-          <h4 className="text-xl font-semibold text-gray-800">{department}</h4>
-          <p className="text-lg text-gray-600 mt-2">Events: {events}</p>
-          <p className="text-lg text-gray-600 mt-2">Participants: {participants}</p>
-        </div>
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      {departments.map(department => (
+        <Link
+          key={department}
+          to={`/department-events/${department}`}
+          className="bg-blue-100 p-6 rounded-lg text-center hover:bg-blue-200 transition-colors"
+        >
+          <h4 className="text-xl font-semibold text-blue-800">{department}</h4>
+        </Link>
       ))}
     </div>
   );

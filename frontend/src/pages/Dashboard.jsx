@@ -1,41 +1,70 @@
-import { useAuth } from '../context/AuthContext';
-import EventStats from '../components/EventStats';
-import AddParticipantForm from '../components/AddParticipanttFrom';
-import DepartmentStats from '../components/DepartmentStats';
-import { Link } from 'react-router-dom';
+import { useAuth } from "../context/AuthContext";
+import EventStats from "../components/EventStats";
+import DepartmentStats from "../components/DepartmentStats";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 function Dashboard() {
   const { user } = useAuth();
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-900">Welcome back, {user.username}!</h2>
-        <p className="text-gray-600 mt-2">Here's your event management overview</p>
+    <div className="min-h-screen bg-gray-100 pt-20 p-8"> {/* Added pt-20 to prevent navbar overlap */}
+      {/* Welcome Section */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-7xl mx-auto text-center mb-8"
+      >
+        <h2 className="text-4xl font-bold text-gray-900">Welcome, {user.username}! 🎉</h2>
+        <p className="text-gray-600 mt-2">Here’s your event management overview</p>
+      </motion.div>
+
+      {/* Stats Section */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <EventStats />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <DepartmentStats />
+        </motion.div>
       </div>
 
-      <EventStats />
-      <DepartmentStats />
-
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-xl font-semibold mb-4">Quick Actions</h3>
+      {/* Quick Actions Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.6 }}
+        className="max-w-7xl mx-auto mt-10 bg-white/50 backdrop-blur-lg shadow-lg rounded-xl p-6"
+      >
+        <h3 className="text-2xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             to="/events"
-            className="flex items-center justify-center p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+            className="flex items-center justify-center p-4 bg-gray-200/50 rounded-lg hover:bg-gray-300 transition-all duration-300"
           >
-            <span className="text-indigo-700 font-medium">View All Events</span>
+            <span className="text-gray-900 font-medium">📅 View All Events</span>
           </Link>
-          {user.role === 'admin' && (
+
+          {user.role === "admin" && (
             <Link
               to="/create-event"
-              className="flex items-center justify-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+              className="flex items-center justify-center p-4 bg-gray-200/50 rounded-lg hover:bg-gray-300 transition-all duration-300"
             >
-              <span className="text-green-700 font-medium">Create New Event</span>
+              <span className="text-gray-900 font-medium">➕ Create New Event</span>
             </Link>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -1,92 +1,114 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import axios from "axios";
+import { motion } from "framer-motion";
+import { FaExternalLinkAlt, FaTrash } from "react-icons/fa";
+import { toast, Toaster } from "react-hot-toast";
 
 function EventList() {
-  const [events, setEvents] = useState([]); // Ensure this is initialized as an array
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { user } = useAuth();
 
-  // Function to fetch events from the backend
+  // Fetch events from the backend
   const getEvents = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await axios.get("http://localhost:3000/event/getEvents");
+      const eventsData = response.data.events;
 
-      // Log the response data to confirm the structure
-      console.log("API Response:", response.data);
-
-      // Access the events array from the response data
-      const eventsData = response.data.events; // Extracting events from the response
-
-      // Check if the eventsData is an array
       if (Array.isArray(eventsData)) {
         setEvents(eventsData);
       } else {
-        console.error("Events data is not an array:", eventsData);
-        setEvents([]); // Set to empty array if response is not as expected
+        setError("Invalid event data received.");
       }
     } catch (error) {
-      console.error("An error occurred while fetching events:", error);
-      if (error.response) {
-        console.error("Error response data:", error.response.data);
-      }
-      setEvents([]); // Ensure we don't crash if there's an error
+      console.error("Error fetching events:", error);
+      setError("Failed to load events. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Function to delete an event
+  // Delete an event
   const handleDelete = async (eventId) => {
     try {
       await axios.delete(`http://localhost:3000/event/deleteEvent/${eventId}`);
-      setEvents(events.filter(event => event._id !== eventId));
+      setEvents(events.filter((event) => event._id !== eventId));
+      toast.success("🗑️ Event Deleted Successfully!");
     } catch (error) {
-      console.error('Error deleting event:', error);
+      console.error("Error deleting event:", error);
+      toast.error("⚠️ Failed to delete event. Try again!");
     }
   };
 
-  // Fetch events on component mount
   useEffect(() => {
     getEvents();
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Events</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Check if events is an array before mapping */}
-        {Array.isArray(events) && events.length > 0 ? (
-          events.map(event => (
-            <div key={event._id} className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-              <p className="text-gray-600 mb-2">Date: {event.date}</p>
-              <p className="text-gray-600 mb-2">Time: {event.time}</p>
-              <p className="text-gray-600 mb-2">Venue: {event.venue}</p>
-              <p className="text-gray-600 mb-2">Department: {event.department}</p>
-              <p className="text-gray-600 mb-2">Eligibility: {event.eligibility}</p>
-              <p className="text-gray-600 mb-4">{event.description}</p>
-              {event.eventLink && (
-                <a
-                  href={event.eventLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 mb-2"
-                >
-                  Event Link
-                </a>
-              )}
-              {user?.role === 'admin' && (
-                <button
-                  onClick={() => handleDelete(event._id)}
-                  className="block w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 mt-2"
-                >
-                  Delete Event
-                </button>
-              )}
-            </div>
-          ))
-        ) : (
-          <div>No events available.</div>
-        )}
-      </div>
+    <div className="min-h-screen pt-20 p-8 bg-gray-100">
+      <Toaster />
+      <motion.h2
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-4xl font-bold text-center text-gray-900 mb-8"
+      >
+        Upcoming Events 📅
+      </motion.h2>
+
+      {loading ? (
+        <div className="text-center text-gray-600 text-lg">Loading events...</div>
+      ) : error ? (
+        <div className="text-center text-red-500 text-lg">{error}</div>
+      ) : events.length > 0 ? (
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {events.map((event, index) => (
+            <motion.div
+              key={event._id}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+              className="bg-white/50 backdrop-blur-lg shadow-lg rounded-2xl p-6 border border-gray-200"
+            >
+              <h3 className="text-2xl font-semibold text-gray-900 mb-2">{event.title}</h3>
+              <p className="text-gray-700"><strong>📅 Date:</strong> {event.date}</p>
+              <p className="text-gray-700"><strong>⏰ Time:</strong> {event.time}</p>
+              <p className="text-gray-700"><strong>📍 Venue:</strong> {event.venue}</p>
+              <p className="text-gray-700"><strong>🏛 Department:</strong> {event.department}</p>
+              <p className="text-gray-700"><strong>🎓 Eligibility:</strong> {event.eligibility}</p>
+              <p className="text-gray-600 mt-2">{event.description}</p>
+
+              <div className="mt-4 flex justify-between items-center">
+                {event.eventLink && (
+                  <a
+                    href={event.eventLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-all"
+                  >
+                    <FaExternalLinkAlt className="mr-2" /> Event Link
+                  </a>
+                )}
+
+                {user?.role === "admin" && (
+                  <button
+                    onClick={() => handleDelete(event._id)}
+                    className="inline-flex items-center bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all"
+                  >
+                    <FaTrash className="mr-2" /> Delete
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center text-gray-500 text-lg">No events available.</div>
+      )}
     </div>
   );
 }

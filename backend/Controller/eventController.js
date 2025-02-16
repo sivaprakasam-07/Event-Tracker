@@ -80,8 +80,37 @@ const deleteEvent = async (req, res) => {
     }
 };
 
+const updateParticipants = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { participants } = req.body;
+
+        const event = await CreateEvent.findByIdAndUpdate(id, { participants }, { new: true });
+
+        if (!event) {
+            return res.status(404).json({
+                message: "Event not found",
+                success: false
+            });
+        }
+
+        res.status(200).json({
+            message: "Participants updated successfully",
+            success: true,
+            event
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "An error occurred while updating participants",
+            success: false
+        });
+    }
+};
+
 module.exports = {
     createEvent,
     getEvents,
-    deleteEvent
+    deleteEvent,
+    updateParticipants
 };

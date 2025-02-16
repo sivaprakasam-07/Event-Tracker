@@ -20,14 +20,14 @@ function Login() {
 
     if (username === adminCredentials.username && password === adminCredentials.password) {
       login({ username, role: "admin" });
-      toast.success("Logged in successfully");
+      toast.success("Logged in successfully", { duration: 4000 });
       navigate("/dashboard");
     } else if (username === userCredentials.username && password === userCredentials.password) {
       login({ username, role: "user" });
-      toast.success("Logged in successfully");
+      toast.success("Logged in successfully", { duration: 4000 });
       navigate("/dashboard");
     } else {
-      toast.error("⚠️ Invalid credentials");
+      toast.error("⚠️ Invalid credentials", { duration: 4000 });
     }
     setLoading(false);
   };

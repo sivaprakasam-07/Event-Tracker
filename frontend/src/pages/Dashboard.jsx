@@ -3,12 +3,14 @@ import EventStats from "../components/EventStats";
 import DepartmentStats from "../components/DepartmentStats";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Toaster } from "react-hot-toast"; // Re-added Toaster import
 
 function Dashboard() {
   const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-100 pt-20 p-8"> {/* Added pt-20 to prevent navbar overlap */}
+      <Toaster />
       {/* Welcome Section */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}

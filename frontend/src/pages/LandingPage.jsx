@@ -1,9 +1,24 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 
 function LandingPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLoginLogout = () => {
+    if (isLoggedIn) {
+      setIsLoggedIn(false);
+      toast.success('Logged out successfully');
+    } else {
+      setIsLoggedIn(true);
+      toast.success('Logged in successfully');
+    }
+  };
+
   return (
     <div className="bg-gradient-to-b from-indigo-100 to-white min-h-screen flex items-center justify-center px-6">
+      <Toaster />
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -18,19 +33,17 @@ function LandingPage() {
           <p className="mt-5 max-w-2xl mx-auto text-lg text-gray-700">
             Plan, organize, and execute memorable events with our powerful and easy-to-use platform.
           </p>
-
-          {/* Button with hover and motion effect */}
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="mt-8"
           >
-            <Link
-              to="/login"
+            <button
+              onClick={handleLoginLogout}
               className="inline-block px-8 py-3 text-lg font-medium text-white bg-indigo-600 rounded-full shadow-md hover:bg-indigo-700 transition duration-300"
             >
-              Get Started
-            </Link>
+              {isLoggedIn ? 'Logout' : 'Login'}
+            </button>
           </motion.div>
         </div>
       </motion.div>

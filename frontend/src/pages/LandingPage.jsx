@@ -28,7 +28,7 @@ function LandingPage() {
       >
         <div className="text-center">
           <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-            <span className="block">Streamline Your</span>
+            <span className="block">St.Joseph's</span>
             <span className="block text-indigo-600">Event Management</span>
           </h1>
           <p className="mt-5 max-w-2xl mx-auto text-lg text-gray-700">

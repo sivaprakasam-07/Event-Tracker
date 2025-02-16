@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
 
 function LandingPage() {
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLoginLogout = () => {
@@ -11,8 +12,8 @@ function LandingPage() {
       setIsLoggedIn(false);
       toast.success('Logged out successfully');
     } else {
-      setIsLoggedIn(true);
-      toast.success('Logged in successfully');
+      navigate("/login");
+      toast.success('Redirecting to login page');
     }
   };
 

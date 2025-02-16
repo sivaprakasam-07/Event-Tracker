@@ -7,26 +7,29 @@ import toast, { Toaster } from "react-hot-toast";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const adminCredentials = { username: "admin", password: "admin123" };
     const userCredentials = { username: "user", password: "user123" };
 
     if (username === adminCredentials.username && password === adminCredentials.password) {
       login({ username, role: "admin" });
-      toast.success("🎉 Admin logged in successfully!");
+      toast.success("Logged in successfully");
       navigate("/dashboard");
     } else if (username === userCredentials.username && password === userCredentials.password) {
       login({ username, role: "user" });
-      toast.success("🎉 User logged in successfully!");
+      toast.success("Logged in successfully");
       navigate("/dashboard");
     } else {
       toast.error("⚠️ Invalid credentials");
     }
+    setLoading(false);
   };
 
   return (
@@ -67,8 +70,9 @@ function Login() {
           <button
             type="submit"
             className="w-full py-2 px-4 bg-blue-700 text-white rounded-lg hover:bg-gray-800 transition duration-300"
+            disabled={loading}
           >
-            Sign in
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
       </motion.div>

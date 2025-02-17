@@ -57,11 +57,10 @@ function DepartmentEvents() {
     <div className="max-w-7xl mx-auto p-8 min-h-screen mt-32">
       <Toaster />
       <h2 className="text-3xl font-bold text-center mb-8">{department} Events</h2>
-
       <h3 className="text-2xl font-semibold mb-4">Upcoming Events</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {upcomingEvents.map(event => (
-          <div key={event._id} className="bg-white shadow-lg rounded-lg p-6">
+          <div key={event._id} className="shadow-lg rounded-lg p-6">
             <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
             <p className="text-gray-600">📅 Date: {event.date}</p>
             <p className="text-gray-600">⏰ Time: {event.time}</p>
@@ -80,7 +79,7 @@ function DepartmentEvents() {
       <h3 className="text-2xl font-semibold mb-4">Past Events</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {pastEvents.map(event => (
-          <div key={event._id} className="bg-white shadow-lg rounded-lg p-6">
+          <div key={event._id} className="shadow-lg rounded-lg p-6">
             <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
             <p className="text-gray-600">📅 Date: {event.date}</p>
             <p className="text-gray-600">⏰ Time: {event.time}</p>

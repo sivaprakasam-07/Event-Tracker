@@ -1,5 +1,4 @@
 const CreateEvent = require("../models/createEvent");
-const { sendEmail } = require("../services/emailService");
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
@@ -39,14 +38,7 @@ const createEvent = async (req, res) => {
         const usersCollection = database.collection('users');
         const users = await usersCollection.find({}).toArray();
 
-        // Send email to all users
-        for (const user of users) {
-            await sendEmail(
-                user.email,
-                `New Event Created: ${title}`,
-                `Dear ${user.name},\n\nA new event "${title}" has been created.\n\nBest regards,\nEvent Tracker Team`
-            );
-        }
+        // Remove email sending logic
 
         res.status(201).json({
             message: "Created event successfully",

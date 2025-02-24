@@ -3,7 +3,6 @@ const app = express();
 const cors = require('cors');
 const uploadRoute = require('./routes/upload');
 const cron = require('node-cron');
-const { sendEmail } = require('./services/emailService');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 require('./Models/config.js');
@@ -43,11 +42,7 @@ cron.schedule('45 23 * * *', async () => {
         }).toArray();
   
         for (const participant of participants) {
-          await sendEmail(
-            participant.email,
-            `Reminder: Upcoming Event - ${event.name}`,
-            `Dear ${participant.name},\n\nThis is a reminder for the upcoming event "${event.name}" happening on ${event.date}.\n\nBest regards,\nEvent Tracker Team`
-          );
+          // Remove email sending logic
         }
       }
     } catch (error) {

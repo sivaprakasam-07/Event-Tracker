@@ -1,6 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import EventStats from "../components/EventStats";
 import DepartmentStats from "../components/DepartmentStats";
+import ExcelUpload from "../components/ExcelUpload";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Toaster } from "react-hot-toast"; // Re-added Toaster import
@@ -67,6 +68,20 @@ function Dashboard() {
           )}
         </div>
       </motion.div>
+
+      {/* Excel Upload Section */}
+      {/* Excel Upload Section - Only for Admins */}
+      {user.role === "admin" && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+          className="max-w-7xl mx-auto mt-10 bg-white/50 backdrop-blur-lg shadow-lg rounded-xl p-6"
+        >
+          <h3 className="text-2xl font-semibold text-gray-900 mb-4">Upload Excel Sheet</h3>
+          <ExcelUpload />
+        </motion.div>
+      )}
     </div>
   );
 }

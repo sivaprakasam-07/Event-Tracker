@@ -1,4 +1,9 @@
 const CreateEvent = require("../models/createEvent");
+const { MongoClient } = require('mongodb');
+require('dotenv').config();
+
+const uri = process.env.MONGO_CONN;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const createEvent = async (req, res) => {
     try {
@@ -26,6 +31,15 @@ const createEvent = async (req, res) => {
 
         await event.save();
         console.log("Created event", event);
+
+        // Fetch users from the database
+        await client.connect();
+        const database = client.db('event-tracker1');
+        const usersCollection = database.collection('users');
+        const users = await usersCollection.find({}).toArray();
+
+        // Remove email sending logic
+
         res.status(201).json({
             message: "Created event successfully",
             success: true
@@ -37,6 +51,8 @@ const createEvent = async (req, res) => {
             message: "An error occurred while creating event",
             success: false
         });
+    } finally {
+        await client.close();
     }
 };
 

@@ -7,7 +7,8 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import CreateEvent from './pages/CreateEvent';
 import EventList from './pages/EventList';
-import DepartmentEvents from './pages/DepartmentEvents'; // Import the new page
+import DepartmentEvents from './pages/DepartmentEvents';
+import MainDashboard from './pages/MainDashboard'; // Import the new MainDashboard page
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 
@@ -42,6 +43,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <DepartmentEvents />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/main-dashboard"
+              element={
+                <PrivateRoute>
+                  <MainDashboard />
                 </PrivateRoute>
               }
             />

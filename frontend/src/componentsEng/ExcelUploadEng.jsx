@@ -14,13 +14,13 @@ function ExcelUpload() {
         'Content-Type': 'multipart/form-data',
       },
     })
-    .then((response) => {
-      toast.success(response.data.message);
-    })
-    .catch((error) => {
-      toast.error('Failed to upload file and insert data');
-      console.error(error);
-    });
+      .then((response) => {
+        toast.success(response.data.message);
+      })
+      .catch((error) => {
+        toast.error('Failed to upload file and insert data');
+        console.error(error);
+      });
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({

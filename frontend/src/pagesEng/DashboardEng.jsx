@@ -1,7 +1,7 @@
 import { useAuth } from "../context/AuthContext";
-import EventStats from "../components/EventStats";
-import DepartmentStats from "../components/DepartmentStats";
-import ExcelUpload from "../components/ExcelUpload";
+import EventStats from "../componentsEng/EventStatsEng";
+import DepartmentStats from "../componentsEng/DepartmentStatsEng";
+import ExcelUpload from "../componentsEng/ExcelUploadEng";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Toaster } from "react-hot-toast"; // Re-added Toaster import

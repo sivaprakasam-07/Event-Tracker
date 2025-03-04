@@ -132,13 +132,11 @@ function CreateEvent() {
                         >
                             <option value="">Select Department</option>
                             <option value="CSE">CSE</option>
+                            <option value="CSE-Cyber Security">CSE-Cyber Security</option>
                             <option value="IT">IT</option>
                             <option value="ADS">ADS</option>
-                            <option value="AIML">AIML</option>
                             <option value="ECE">ECE</option>
                             <option value="EEE">EEE</option>
-                            <option value="Bio-Tech">Bio-Technology</option>
-                            <option value="Chemical">Chemical Engineering</option>
                         </select>
                     </div>
 

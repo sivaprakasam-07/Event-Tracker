@@ -10,7 +10,7 @@ function DepartmentStats() {
       {departments.map(department => (
         <Link
           key={department}
-          to={`/department-events/${department}`}
+          to={`/engineering/department-events/${department}`}
           className="bg-blue-100 p-6 rounded-lg text-center hover:bg-blue-200 transition-colors"
         >
           <h4 className="text-xl font-semibold text-blue-800">{department}</h4>

@@ -52,7 +52,7 @@ function Dashboard() {
                 <h3 className="text-2xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Link
-                        to="/events"
+                        to="/technology/events"
                         className="flex items-center justify-center p-4 bg-gray-200/50 rounded-lg hover:bg-gray-300 transition-all duration-300"
                     >
                         <span className="text-gray-900 font-medium">📅 View All Events</span>
@@ -60,19 +60,16 @@ function Dashboard() {
 
                     {user.role === "admin" && (
                         <Link
-                            to="/create-event"
+                            to="/technology/create-event"
                             className="flex items-center justify-center p-4 bg-gray-200/50 rounded-lg hover:bg-gray-300 transition-all duration-300"
                         >
                             <span className="text-gray-900 font-medium">➕ Create New Event</span>
                         </Link>
                     )}
                 </div>
-            </motion.div>
-
-            {/* Excel Upload Section */}
-            {/* Excel Upload Section - Only for Admins */}
+            </motion.div>s
             {user.role === "admin" && (
-                <motion.div
+                <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.8 }}

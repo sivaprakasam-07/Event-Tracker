@@ -28,7 +28,7 @@ function CreateEvent() {
       toast.success("🎉 Event Created Successfully!");
 
       // ⏳ Redirect after a short delay
-      setTimeout(() => navigate("/events"), 3500);
+      setTimeout(() => navigate("/engineering/events"), 3500);
     } catch (err) {
       console.error("Error occurred while creating event:", err);
 

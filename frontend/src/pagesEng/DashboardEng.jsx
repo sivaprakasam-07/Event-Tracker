@@ -52,7 +52,7 @@ function Dashboard() {
         <h3 className="text-2xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
-            to="/events"
+            to="/engineering/events"
             className="flex items-center justify-center p-4 bg-gray-200/50 rounded-lg hover:bg-gray-300 transition-all duration-300"
           >
             <span className="text-gray-900 font-medium">📅 View All Events</span>
@@ -60,7 +60,7 @@ function Dashboard() {
 
           {user.role === "admin" && (
             <Link
-              to="/create-event"
+              to="/engineering/create-event"
               className="flex items-center justify-center p-4 bg-gray-200/50 rounded-lg hover:bg-gray-300 transition-all duration-300"
             >
               <span className="text-gray-900 font-medium">➕ Create New Event</span>

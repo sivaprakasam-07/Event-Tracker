@@ -72,6 +72,21 @@ function DepartmentEvents() {
                 Event Link
               </a>
             )}
+            {user?.role === 'admin' && (
+              <form onSubmit={(e) => handleParticipantsSubmit(e, event._id)} className="mt-4">
+                <label className="block text-sm font-medium text-gray-700">Add Participants</label>
+                <input
+                  type="number"
+                  value={participantInputs[event._id] || ''}
+                  onChange={(e) => handleParticipantsChange(e, event._id)}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
+                  required
+                />
+                <button type="submit" className="mt-2 w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700">
+                  Add Participants
+                </button>
+              </form>
+            )}
           </div>
         ))}
       </div>

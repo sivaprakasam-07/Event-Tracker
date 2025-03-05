@@ -29,7 +29,7 @@ function Navbar() {
                 <Link to="/engineering/events" className="nav-link">
                   Events
                 </Link>
-                {user.role === "admin" && (
+                {(user.role === "masterAdmin" || user.role === "superAdminEng") && (
                   <Link to="/engineering/create-event" className="nav-link">
                     Create Event
                   </Link>

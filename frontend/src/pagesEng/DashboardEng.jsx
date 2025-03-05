@@ -58,7 +58,7 @@ function Dashboard() {
             <span className="text-gray-900 font-medium">📅 View All Events</span>
           </Link>
 
-          {user.role === "admin" && (
+          {(user.role === "masterAdmin" || user.role === "superAdminEng") && (
             <Link
               to="/engineering/create-event"
               className="flex items-center justify-center p-4 bg-gray-200/50 rounded-lg hover:bg-gray-300 transition-all duration-300"
@@ -70,8 +70,7 @@ function Dashboard() {
       </motion.div>
 
       {/* Excel Upload Section */}
-      {/* Excel Upload Section - Only for Admins */}
-      {user.role === "admin" && (
+      {(user.role === "masterAdmin" || user.role === "superAdminEng") && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

@@ -1,7 +1,7 @@
 import { useAuth } from "../context/AuthContext";
-import EventStats from "../components/EventStats";
-import DepartmentStats from "../components/DepartmentStats";
-import ExcelUpload from "../components/ExcelUpload";
+import EventStats from "../componentsEng/EventStatsEng";
+import DepartmentStats from "../componentsEng/DepartmentStatsEng";
+import ExcelUpload from "../componentsEng/ExcelUploadEng";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Toaster } from "react-hot-toast"; // Re-added Toaster import
@@ -52,15 +52,15 @@ function Dashboard() {
         <h3 className="text-2xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
-            to="/events"
+            to="/engineering/events"
             className="flex items-center justify-center p-4 bg-gray-200/50 rounded-lg hover:bg-gray-300 transition-all duration-300"
           >
             <span className="text-gray-900 font-medium">📅 View All Events</span>
           </Link>
 
-          {user.role === "admin" && (
+          {(user.role === "masterAdmin" || user.role === "superAdminEng") && (
             <Link
-              to="/create-event"
+              to="/engineering/create-event"
               className="flex items-center justify-center p-4 bg-gray-200/50 rounded-lg hover:bg-gray-300 transition-all duration-300"
             >
               <span className="text-gray-900 font-medium">➕ Create New Event</span>
@@ -70,8 +70,7 @@ function Dashboard() {
       </motion.div>
 
       {/* Excel Upload Section */}
-      {/* Excel Upload Section - Only for Admins */}
-      {user.role === "admin" && (
+      {(user.role === "masterAdmin" || user.role === "superAdminEng") && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

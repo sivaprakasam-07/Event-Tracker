@@ -57,11 +57,10 @@ function DepartmentEvents() {
     <div className="max-w-7xl mx-auto p-8 min-h-screen mt-32">
       <Toaster />
       <h2 className="text-3xl font-bold text-center mb-8">{department} Events</h2>
-
       <h3 className="text-2xl font-semibold mb-4">Upcoming Events</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {upcomingEvents.map(event => (
-          <div key={event._id} className="bg-white shadow-lg rounded-lg p-6">
+          <div key={event._id} className="shadow-lg rounded-lg p-6">
             <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
             <p className="text-gray-600">📅 Date: {event.date}</p>
             <p className="text-gray-600">⏰ Time: {event.time}</p>
@@ -73,6 +72,21 @@ function DepartmentEvents() {
                 Event Link
               </a>
             )}
+            {user?.role === 'admin' && (
+              <form onSubmit={(e) => handleParticipantsSubmit(e, event._id)} className="mt-4">
+                <label className="block text-sm font-medium text-gray-700">Add Participants</label>
+                <input
+                  type="number"
+                  value={participantInputs[event._id] || ''}
+                  onChange={(e) => handleParticipantsChange(e, event._id)}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
+                  required
+                />
+                <button type="submit" className="mt-2 w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700">
+                  Add Participants
+                </button>
+              </form>
+            )}
           </div>
         ))}
       </div>
@@ -80,7 +94,7 @@ function DepartmentEvents() {
       <h3 className="text-2xl font-semibold mb-4">Past Events</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {pastEvents.map(event => (
-          <div key={event._id} className="bg-white shadow-lg rounded-lg p-6">
+          <div key={event._id} className="shadow-lg rounded-lg p-6">
             <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
             <p className="text-gray-600">📅 Date: {event.date}</p>
             <p className="text-gray-600">⏰ Time: {event.time}</p>

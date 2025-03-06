@@ -15,17 +15,21 @@ function Login() {
     e.preventDefault();
     setLoading(true);
 
-    const adminCredentials = { username: "admin", password: "admin123" };
-    const userCredentials = { username: "user", password: "user123" };
+    const credentials = [
+      { username: "masterAdmin", password: "masterAdmin123", role: "masterAdmin" },
+      { username: "superAdminTech", password: "superAdminTech123", role: "superAdminTech" },
+      { username: "superAdminEng", password: "superAdminEng123", role: "superAdminEng" },
+      { username: "user", password: "user123", role: "user" }
+    ];
 
-    if (username === adminCredentials.username && password === adminCredentials.password) {
-      login({ username, role: "admin" });
+    const user = credentials.find(
+      (cred) => cred.username === username && cred.password === password
+    );
+
+    if (user) {
+      login({ username: user.username, role: user.role });
       toast.success("Logged in successfully", { duration: 4000 });
-      navigate("/dashboard");
-    } else if (username === userCredentials.username && password === userCredentials.password) {
-      login({ username, role: "user" });
-      toast.success("Logged in successfully", { duration: 4000 });
-      navigate("/dashboard");
+      navigate("/main-dashboard");
     } else {
       toast.error("⚠️ Invalid credentials", { duration: 4000 });
     }

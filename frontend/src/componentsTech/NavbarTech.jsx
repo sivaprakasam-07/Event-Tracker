@@ -23,14 +23,14 @@ function Navbar() {
           <div className="flex items-center space-x-6">
             {user ? (
               <>
-                <Link to="/dashboard" className="nav-link">
+                <Link to="/technology" className="nav-link">
                   Dashboard
                 </Link>
-                <Link to="/events" className="nav-link">
+                <Link to="/technology/events" className="nav-link">
                   Events
                 </Link>
-                {user.role === "admin" && (
-                  <Link to="/create-event" className="nav-link">
+                {(user.role === "masterAdmin" || user.role === "superAdminTech") && (
+                  <Link to="/technology/create-event" className="nav-link">
                     Create Event
                   </Link>
                 )}

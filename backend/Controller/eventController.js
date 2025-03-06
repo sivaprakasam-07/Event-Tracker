@@ -5,60 +5,23 @@ require('dotenv').config();
 const uri = process.env.MONGO_CONN;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
+const Event = require('../Models/event'); // Assuming you have an Event model
+
 const createEvent = async (req, res) => {
+    const eventData = req.body;
     try {
-        const {
-            title,
-            date,
-            time,
-            venue,
-            eventLink,
-            description,
-            department,
-            eligibility
-        } = req.body;
-
-        const event = new CreateEvent({
-            title,
-            date,
-            time,
-            venue,
-            eventLink,
-            description,
-            department,
-            eligibility
-        });
-
-        await event.save();
-        console.log("Created event", event);
-
-        // Fetch users from the database
-        await client.connect();
-        const database = client.db('event-tracker1');
-        const usersCollection = database.collection('users');
-        const users = await usersCollection.find({}).toArray();
-
-        // Remove email sending logic
-
-        res.status(201).json({
-            message: "Created event successfully",
-            success: true
-        });
-
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            message: "An error occurred while creating event",
-            success: false
-        });
-    } finally {
-        await client.close();
+        const newEvent = new Event(eventData);
+        await newEvent.save();
+        res.status(201).json(newEvent);
+    } catch (error) {
+        res.status(500).json({ error: 'Error creating event' });
     }
 };
 
 const getEvents = async (req, res) => {
+    const filters = req.query;
     try {
-        const events = await CreateEvent.find();
+        const events = await CreateEvent.find(filters);
         if (events.length == 0) {
             return res.status(404).json({
                 message: "No events found",
@@ -80,53 +43,35 @@ const getEvents = async (req, res) => {
 };
 
 const deleteEvent = async (req, res) => {
+    const { id } = req.params;
     try {
-        const { id } = req.params;
-        await CreateEvent.findByIdAndDelete(id);
-        res.status(200).json({
-            message: "Deleted event successfully",
-            success: true
-        });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            message: "An error occurred while deleting event",
-            success: false
-        });
+        await Event.findByIdAndDelete(id);
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ error: 'Error deleting event' });
+    }
+};
+
+const updateEvent = async (req, res) => {
+    const { id } = req.params;
+    const eventData = req.body;
+    try {
+        const updatedEvent = await Event.findByIdAndUpdate(id, eventData, { new: true });
+        res.json(updatedEvent);
+    } catch (error) {
+        res.status(500).json({ error: 'Error updating event' });
     }
 };
 
 const updateParticipants = async (req, res) => {
+    const { id } = req.params;
+    const { participants } = req.body;
     try {
-        const { id } = req.params;
-        const { participants } = req.body;
-
-        const event = await CreateEvent.findByIdAndUpdate(id, { participants }, { new: true });
-
-        if (!event) {
-            return res.status(404).json({
-                message: "Event not found",
-                success: false
-            });
-        }
-
-        res.status(200).json({
-            message: "Participants updated successfully",
-            success: true,
-            event
-        });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            message: "An error occurred while updating participants",
-            success: false
-        });
+        const updatedEvent = await Event.findByIdAndUpdate(id, { participants }, { new: true });
+        res.json(updatedEvent);
+    } catch (error) {
+        res.status(500).json({ error: 'Error updating participants' });
     }
 };
 
-module.exports = {
-    createEvent,
-    getEvents,
-    deleteEvent,
-    updateParticipants
-};
+module.exports = { getEvents, createEvent, updateEvent, deleteEvent, updateParticipants };

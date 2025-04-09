@@ -8,7 +8,7 @@ import CreateEventEng from './pagesEng/CreateEventEng';
 import EventListEng from './pagesEng/EventListEng';
 import DepartmentEventsEng from './pagesEng/DepartmentEventsEng';
 import DashboardTech from './pagesTech/DashboardTech';
-import CreateEventTech from './pagesTech/CreateEventTech';
+import CreateEventTech from './pagesTech/CreateEventtech';
 import EventListTech from './pagesTech/EventListTech';
 import DepartmentEventsTech from './pagesTech/DepartmentEventsTech';
 import LandingPage from './pages/LandingPage';
@@ -79,14 +79,14 @@ function App() {
             />
             <Route
               path="/engineering/department-events/:department"
-              element={{
+              element={
                 <PrivateRoute>
                   <>
                     <NavbarEng />
                     <DepartmentEventsEng />
                   </>
                 </PrivateRoute>
-              }}
+              }
             />
             <Route
               path="/technology/create-event"

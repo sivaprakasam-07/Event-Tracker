@@ -152,13 +152,17 @@ function EventList() {
                                     </a>
                                 )}
 
-                                {user?.role === "admin" && (
-                                    <button
-                                        onClick={() => handleDelete(event._id)}
-                                        className="inline-flex items-center bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all"
-                                    >
-                                        <FaTrash className="mr-2" /> Delete
-                                    </button>
+                                {user && (
+                                    (user.role === "masterAdmin" ||
+                                    user.role === "superAdminTech" ||
+                                    (user.role.endsWith("TechHod") && user.role.startsWith(event.department))) && (
+                                        <button
+                                            onClick={() => handleDelete(event._id)}
+                                            className="inline-flex items-center bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all"
+                                        >
+                                            <FaTrash className="mr-2" /> Delete
+                                        </button>
+                                    )
                                 )}
                             </div>
                         </motion.div>

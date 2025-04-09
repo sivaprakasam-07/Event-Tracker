@@ -1,23 +1,30 @@
-import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 const PrivateRoute = ({ children }) => {
     const { user } = useAuth();
-    const location = useLocation();
 
     if (!user) {
-        return <Navigate to="/login" />;
+        toast.error("You need to log in to access this section.", { id: "auth-error" });
+        return null; // Prevent navigation
     }
 
-    if (user.role === 'superAdminTech' && location.pathname.startsWith('/engineering')) {
-        toast.error("You don't have access to this section.");
-        return <div className="text-center text-red-500 text-lg"><Toaster /></div>;
+    // Restrict access for technology roles to engineering sections
+    if (
+        (user.role === 'superAdminTech' || user.role.endsWith('TechHod')) &&
+        window.location.pathname.startsWith('/engineering')
+    ) {
+        toast.error("You don't have access to this section.", { id: "access-error" });
+        return null; // Prevent navigation
     }
 
-    if (user.role === 'superAdminEng' && location.pathname.startsWith('/technology')) {
-        toast.error("You don't have access to this section.");
-        return <div className="text-center text-red-500 text-lg"><Toaster /></div>;
+    // Restrict access for engineering roles to technology sections
+    if (
+        (user.role === 'superAdminEng' || user.role.endsWith('EngHod')) &&
+        window.location.pathname.startsWith('/technology')
+    ) {
+        toast.error("You don't have access to this section.", { id: "access-error" });
+        return null; // Prevent navigation
     }
 
     return children;

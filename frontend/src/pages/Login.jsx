@@ -11,16 +11,28 @@ function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  const credentials = [
+    { username: "SuperAdminEng", password: "superadmineng123", role: "superAdminEng" },
+    { username: "SuperAdminTech", password: "superadmintech123", role: "superAdminTech" },
+    { username: "CSEEngHod", password: "cseenghod123", role: "CSEEngHod" },
+    { username: "ITEngHod", password: "itenghod123", role: "ITEngHod" },
+    { username: "ADSEngHod", password: "adsenghod123", role: "ADSengHod" },
+    { username: "AIMLEngHod", password: "aimlenghod123", role: "AIMLEngHod" },
+    { username: "ECEEngHod", password: "eceenghod123", role: "ECEEngHod" },
+    { username: "EEEEngHod", password: "eeeenghod123", role: "EEEEngHod" },
+    { username: "BTEngHod", password: "btenghod123", role: "BioTechEngHod" },
+    { username: "ChemEngHod", password: "chemenghod123", role: "ChemicalEngHod" },
+    { username: "CseTechHod", password: "csetechhod123", role: "CSETechHod" },
+    { username: "CyberTechHod", password: "cybertechhod123", role: "CSECyberHod" },
+    { username: "ITTechHod", password: "ittechhod123", role: "ITTechHod" },
+    { username: "ADSTechHod", password: "adstechhod123", role: "ADSTechHod" },
+    { username: "ECETechHod", password: "ecetechhod123", role: "ECETechHod" },
+    { username: "EEETechHod", password: "eeetechhod123", role: "EEETechHod" },
+  ];
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const credentials = [
-      { username: "masterAdmin", password: "masterAdmin123", role: "masterAdmin" },
-      { username: "superAdminTech", password: "superAdminTech123", role: "superAdminTech" },
-      { username: "superAdminEng", password: "superAdminEng123", role: "superAdminEng" },
-      { username: "user", password: "user123", role: "user" }
-    ];
 
     const user = credentials.find(
       (cred) => cred.username === username && cred.password === password
@@ -31,7 +43,7 @@ function Login() {
       toast.success("Logged in successfully", { duration: 4000 });
       navigate("/main-dashboard");
     } else {
-      toast.error("⚠️ Invalid credentials", { duration: 4000 });
+      toast.error("Invalid username or password", { duration: 4000 });
     }
     setLoading(false);
   };

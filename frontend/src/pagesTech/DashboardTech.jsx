@@ -58,7 +58,7 @@ function Dashboard() {
             <span className="text-gray-900 font-medium">📅 View All Events</span>
           </Link>
 
-          {(user.role === "masterAdmin" || user.role === "superAdminTech") && (
+          {(user.role === "masterAdmin" || user.role === "superAdminTech" || user.role.endsWith("TechHod")) && (
             <Link
               to="/technology/create-event"
               className="flex items-center justify-center p-4 bg-gray-200/50 rounded-lg hover:bg-gray-300 transition-all duration-300"
@@ -68,7 +68,7 @@ function Dashboard() {
           )}
         </div>
       </motion.div>
-      {(user.role === "masterAdmin" || user.role === "superAdminTech") && (
+      {(user.role === "masterAdmin" || user.role === "superAdminTech" || user.role.endsWith("TechHod")) && (
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

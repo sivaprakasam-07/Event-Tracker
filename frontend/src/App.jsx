@@ -45,6 +45,17 @@ function App() {
               }
             />
             <Route
+              path="/technology"
+              element={
+                <PrivateRoute>
+                  <>
+                    <NavbarTech />
+                    <DashboardTech />
+                  </>
+                </PrivateRoute>
+              }
+            />
+            <Route
               path="/engineering/create-event"
               element={
                 <PrivateRoute>
@@ -68,25 +79,14 @@ function App() {
             />
             <Route
               path="/engineering/department-events/:department"
-              element={
+              element={{
                 <PrivateRoute>
                   <>
                     <NavbarEng />
                     <DepartmentEventsEng />
                   </>
                 </PrivateRoute>
-              }
-            />
-            <Route
-              path="/technology"
-              element={
-                <PrivateRoute>
-                  <>
-                    <NavbarTech />
-                    <DashboardTech />
-                  </>
-                </PrivateRoute>
-              }
+              }}
             />
             <Route
               path="/technology/create-event"

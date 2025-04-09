@@ -12,6 +12,10 @@ export default function MainDashboard() {
     const [images, setImages] = useState([]); // Placeholder for carousel images
 
     const handleNavigate = (path) => {
+        if (user.role === "masterAdmin") {
+            navigate(path); // Master admin has access to all sections
+            return;
+        }
         if (user.role === "superAdminTech" && path === "/engineering") {
             return toast.error("You don't have access to this section.");
         }

@@ -9,6 +9,10 @@ const PrivateRoute = ({ children }) => {
         return null; // Prevent navigation
     }
 
+    if (user.role === 'masterAdmin') {
+        return children; // Master admin has access to all sections
+    }
+
     // Restrict access for technology roles to engineering sections
     if (
         (user.role === 'superAdminTech' || user.role.endsWith('TechHod')) &&

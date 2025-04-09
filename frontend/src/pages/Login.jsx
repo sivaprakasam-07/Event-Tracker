@@ -12,6 +12,7 @@ function Login() {
   const { login } = useAuth();
 
   const credentials = [
+    { username: "MasterAdmin", password: "masteradmin123", role: "masterAdmin" },
     { username: "SuperAdminEng", password: "superadmineng123", role: "superAdminEng" },
     { username: "SuperAdminTech", password: "superadmintech123", role: "superAdminTech" },
     { username: "CSEEngHod", password: "cseenghod123", role: "CSEEngHod" },

@@ -3,8 +3,6 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
 
 export default function MainDashboard() {
     const navigate = useNavigate();

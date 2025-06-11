@@ -16,6 +16,8 @@ import Login from './pages/Login';
 import MainDashboard from './pages/MainDashboard';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import ExternalEvents from './pages/ExternalEvents';
+
 
 function App() {
   return (
@@ -121,6 +123,7 @@ function App() {
                 </PrivateRoute>
               }
             />
+            <Route path="/external-events" element={<ExternalEvents />} />
           </Routes>
           <ToastContainer />
         </div>

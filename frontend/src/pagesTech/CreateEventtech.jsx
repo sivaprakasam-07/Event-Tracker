@@ -18,43 +18,53 @@ function CreateEvent() {
 
   const [poster, setPoster] = useState(null);
   const [preview, setPreview] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       let uploadedPosterUrl = "";
 
-      // If poster is uploaded, handle upload to Firebase
+      // If poster is uploaded, handle upload to Cloudinary
       if (poster) {
         const formData = new FormData();
         formData.append("file", poster);
+        formData.append("upload_preset", "your_cloudinary_preset");
 
         const uploadResponse = await axios.post(
-          "http://localhost:3000/upload/poster",
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
+          "https://api.cloudinary.com/v1_1/your_cloud_name/image/upload",
+          formData
         );
-        uploadedPosterUrl = uploadResponse.data.url;
+        uploadedPosterUrl = uploadResponse.data.secure_url;
       }
 
       const eventPayload = {
         ...eventData,
-        posterUrl: uploadedPosterUrl,
+        posterUrl: uploadedPosterUrl || eventData.posterUrl,
       };
 
       // API call to create event
-      await axios.post("http://localhost:3000/event/createEvent", eventPayload, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.post(
+        "http://localhost:3000/event/createEvent",
+        eventPayload,
+        { headers: { "Content-Type": "application/json" } }
+      );
 
-      toast.success("🎉 Event Created Successfully!");
-      setTimeout(() => navigate("/engineering/events"), 3000);
+      if (response.data.success) {
+        toast.success("🎉 Event Created Successfully!");
+        setTimeout(() => navigate("/engineering/events"), 3000);
+      } else {
+        toast.error("⚠️ Failed to create event. Please try again!");
+      }
     } catch (err) {
       console.error("Error occurred while creating event:", err);
-      toast.error("⚠️ Failed to create event. Try again!");
+      toast.error("⚠️ Error creating event. Try again!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -171,13 +181,13 @@ function CreateEvent() {
               value={eventData.department}
               onChange={handleChange}
             >
-                <option value="">Select Department</option>
-                <option value="CSE">CSE</option>
-                <option value="CSE-Cyber Security">CSE-Cyber Security</option>
-                <option value="IT">IT</option>
-                <option value="ADS">ADS</option>
-                <option value="ECE">ECE</option>
-                <option value="EEE">EEE</option>
+              <option value="">Select Department</option>
+              <option value="CSE">CSE</option>
+              <option value="CSE-Cyber Security">CSE-Cyber Security</option>
+              <option value="IT">IT</option>
+              <option value="ADS">ADS</option>
+              <option value="ECE">ECE</option>
+              <option value="EEE">EEE</option>
             </select>
           </div>
 
@@ -239,9 +249,12 @@ function CreateEvent() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300"
+            disabled={loading}
+            className={`w-full ${
+              loading ? "bg-gray-400" : "bg-indigo-600"
+            } text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300`}
           >
-            Create Event
+            {loading ? "Creating Event..." : "Create Event"}
           </button>
         </form>
       </div>

@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require('cors');
 const uploadRoute = require('./routes/upload');
+const uploadRoutes = require("./routes/uploadRoutes");
 const cron = require('node-cron');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
@@ -12,6 +13,7 @@ app.use(cors());
 
 app.use("/event", EventRouter);
 app.use('/api', uploadRoute);
+app.use("/api/upload", uploadRoutes);
 
 const PORT = process.env.PORT || 8080;
 

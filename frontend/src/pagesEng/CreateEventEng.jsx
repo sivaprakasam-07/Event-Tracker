@@ -13,39 +13,39 @@ function CreateEvent() {
     eventLink: "",
     department: "",
     eligibility: "",
-    posterUrl: "", // Store uploaded poster URL here
+    pamphletUrl: "", // ✅ Updated to pamphletUrl
   });
 
-  const [poster, setPoster] = useState(null);
+  const [pamphlet, setPamphlet] = useState(null);
   const [preview, setPreview] = useState("");
 
   const navigate = useNavigate();
 
-  // Handle form submission
+  // 🎯 Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let uploadedPosterUrl = "";
+      let uploadedPamphletUrl = "";
 
-      // If poster is uploaded, handle upload to Firebase
-      if (poster) {
+      // ✅ If pamphlet is uploaded, upload to Cloudinary
+      if (pamphlet) {
         const formData = new FormData();
-        formData.append("file", poster);
+        formData.append("pamphlet", pamphlet);
 
         const uploadResponse = await axios.post(
-          "http://localhost:3000/upload/poster",
+          "http://localhost:3000/api/upload/pamphlet", // ✅ Correct route for pamphlet upload
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
-        uploadedPosterUrl = uploadResponse.data.url;
+        uploadedPamphletUrl = uploadResponse.data.url; // 📸 Cloudinary URL
       }
 
       const eventPayload = {
         ...eventData,
-        posterUrl: uploadedPosterUrl,
+        pamphletUrl: uploadedPamphletUrl,
       };
 
-      // API call to create event
+      // 🎯 API Call to Create Event
       await axios.post("http://localhost:3000/event/createEvent", eventPayload, {
         headers: { "Content-Type": "application/json" },
       });
@@ -53,12 +53,12 @@ function CreateEvent() {
       toast.success("🎉 Event Created Successfully!");
       setTimeout(() => navigate("/engineering/events"), 3000);
     } catch (err) {
-      console.error("Error occurred while creating event:", err);
+      console.error("Error occurred while creating event:", err.response?.data || err.message);
       toast.error("⚠️ Failed to create event. Try again!");
     }
   };
 
-  // Handle input change
+  // 📚 Handle Input Changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEventData((prev) => ({
@@ -67,11 +67,11 @@ function CreateEvent() {
     }));
   };
 
-  // Handle file selection
+  // 📸 Handle File Selection for Pamphlet
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setPoster(file);
-    setPreview(URL.createObjectURL(file)); // Generate preview URL
+    setPamphlet(file);
+    setPreview(URL.createObjectURL(file)); // Show preview on selection
   };
 
   return (
@@ -86,9 +86,7 @@ function CreateEvent() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Title
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Title</label>
             <input
               type="text"
               name="title"
@@ -102,9 +100,7 @@ function CreateEvent() {
           {/* Date & Time */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Date
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Date</label>
               <input
                 type="date"
                 name="date"
@@ -115,9 +111,7 @@ function CreateEvent() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Time
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Time</label>
               <input
                 type="time"
                 name="time"
@@ -131,9 +125,7 @@ function CreateEvent() {
 
           {/* Venue */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Venue
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Venue</label>
             <input
               type="text"
               name="venue"
@@ -146,9 +138,7 @@ function CreateEvent() {
 
           {/* Event Link */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Event Link
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Event Link</label>
             <input
               type="url"
               name="eventLink"
@@ -161,9 +151,7 @@ function CreateEvent() {
 
           {/* Department */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Department
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Department</label>
             <select
               name="department"
               required
@@ -185,9 +173,7 @@ function CreateEvent() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Description
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Description</label>
             <textarea
               name="description"
               rows="4"
@@ -199,9 +185,7 @@ function CreateEvent() {
 
           {/* Eligibility */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Eligibility
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Eligibility</label>
             <textarea
               name="eligibility"
               rows="2"
@@ -211,10 +195,10 @@ function CreateEvent() {
             />
           </div>
 
-          {/* File Upload (Poster) */}
+          {/* File Upload (Pamphlet) */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Event Poster (Optional)
+              Event Pamphlet (Optional)
             </label>
             <input
               type="file"
@@ -224,15 +208,13 @@ function CreateEvent() {
             />
           </div>
 
-          {/* Poster Preview */}
+          {/* Pamphlet Preview */}
           {preview && (
             <div className="mt-4">
-              <p className="text-sm font-medium text-gray-700 mb-2">
-                Poster Preview:
-              </p>
+              <p className="text-sm font-medium text-gray-700 mb-2">Pamphlet Preview:</p>
               <img
                 src={preview}
-                alt="Poster Preview"
+                alt="Pamphlet Preview"
                 className="w-full h-40 object-contain rounded-lg border"
               />
             </div>

@@ -2,8 +2,26 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
+import { useAuth } from "../context/AuthContext"; // Import useAuth
 
 function CreateEvent() {
+  const { user } = useAuth(); // Get the logged-in user's role
+
+  // Define department options based on the user's role
+  const departmentOptions = user.role === "CSETechHod"
+    ? ["CSE"]
+    : user.role === "CSECyberHod"
+    ? ["CSE-Cyber Security"]
+    : user.role === "ITTechHod"
+    ? ["IT"]
+    : user.role === "ADSTechHod"
+    ? ["ADS"]
+    : user.role === "ECETechHod"
+    ? ["ECE"]
+    : user.role === "EEETechHod"
+    ? ["EEE"]
+    : ["CSE", "CSE-Cyber Security", "IT", "ADS", "ECE", "EEE"]; // Default for admins
+
   const [eventData, setEventData] = useState({
     title: "",
     date: "",
@@ -56,7 +74,7 @@ function CreateEvent() {
 
       if (response.data.success) {
         toast.success("🎉 Event Created Successfully!");
-        setTimeout(() => navigate("/engineering/events"), 3000);
+        setTimeout(() => navigate("/technology/events"), 3000);
       } else {
         toast.error("⚠️ Failed to create event. Please try again!");
       }
@@ -182,12 +200,11 @@ function CreateEvent() {
               onChange={handleChange}
             >
               <option value="">Select Department</option>
-              <option value="CSE">CSE</option>
-              <option value="CSE-Cyber Security">CSE-Cyber Security</option>
-              <option value="IT">IT</option>
-              <option value="ADS">ADS</option>
-              <option value="ECE">ECE</option>
-              <option value="EEE">EEE</option>
+              {departmentOptions.map((dept) => (
+                <option key={dept} value={dept}>
+                  {dept}
+                </option>
+              ))}
             </select>
           </div>
 

@@ -73,8 +73,6 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
@@ -110,6 +108,10 @@ export default function MainDashboard() {
 
   // 🚀 Handle Navigation Based on Role
   const handleNavigate = (path) => {
+        if (user.role === "masterAdmin") {
+            navigate(path); // Master admin has access to all sections
+            return;
+        }
     if (user.role === "superAdminTech" && path === "/engineering") {
       return toast.error("❌ You don't have access to this section.");
     }

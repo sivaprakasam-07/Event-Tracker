@@ -8,7 +8,7 @@ import CreateEventEng from './pagesEng/CreateEventEng';
 import EventListEng from './pagesEng/EventListEng';
 import DepartmentEventsEng from './pagesEng/DepartmentEventsEng';
 import DashboardTech from './pagesTech/DashboardTech';
-import CreateEventTech from './pagesTech/CreateEventTech';
+import CreateEventTech from './pagesTech/CreateEventtech';
 import EventListTech from './pagesTech/EventListTech';
 import DepartmentEventsTech from './pagesTech/DepartmentEventsTech';
 import LandingPage from './pages/LandingPage';
@@ -16,6 +16,8 @@ import Login from './pages/Login';
 import MainDashboard from './pages/MainDashboard';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import ExternalEvents from './pages/ExternalEvents';
+
 
 function App() {
   return (
@@ -40,6 +42,17 @@ function App() {
                   <>
                     <NavbarEng />
                     <DashboardEng />
+                  </>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/technology"
+              element={
+                <PrivateRoute>
+                  <>
+                    <NavbarTech />
+                    <DashboardTech />
                   </>
                 </PrivateRoute>
               }
@@ -78,17 +91,6 @@ function App() {
               }
             />
             <Route
-              path="/technology"
-              element={
-                <PrivateRoute>
-                  <>
-                    <NavbarTech />
-                    <DashboardTech />
-                  </>
-                </PrivateRoute>
-              }
-            />
-            <Route
               path="/technology/create-event"
               element={
                 <PrivateRoute>
@@ -121,6 +123,7 @@ function App() {
                 </PrivateRoute>
               }
             />
+            <Route path="/external-events" element={<ExternalEvents />} />
           </Routes>
           <ToastContainer />
         </div>

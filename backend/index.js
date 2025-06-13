@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const uploadRoute = require("./Routes/Upload");
-const uploadRoutes = require("./routes/uploadRoutes");
+const uploadRoutes = require("./Routes/UploadRoutes");
 const ScrapeRouter = require("./Routes/ScrapeRouter");
 const EventRouter = require("./Routes/EventsRouter");
 

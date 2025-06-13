@@ -23,9 +23,10 @@ const createEvent = async (req, res) => {
       description,
       department,
       eligibility,
+      posterUrl: posterUrlFromBody, // <-- get posterUrl from body
     } = req.body;
 
-    let pamphletUrl = ""; // Initialize pamphlet URL
+    let posterUrl = posterUrlFromBody || ""; // Use posterUrl from body if present
 
     if (req.file) {
       // 🔥 Upload to Cloudinary if file is uploaded
@@ -40,7 +41,7 @@ const createEvent = async (req, res) => {
         uploadStream.end(req.file.buffer);
       });
 
-      pamphletUrl = result.secure_url;
+      posterUrl = result.secure_url;
     }
 
     const event = new CreateEvent({
@@ -52,7 +53,7 @@ const createEvent = async (req, res) => {
       description,
       department,
       eligibility,
-      pamphletUrl, // ✅ Added pamphlet URL to event
+      posterUrl, // Always store the posterUrl (from body or Cloudinary)
     });
 
     await event.save();

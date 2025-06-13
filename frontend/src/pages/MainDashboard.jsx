@@ -90,11 +90,10 @@ export default function MainDashboard() {
     const fetchMedia = async () => {
       try {
         const res = await axios.get("http://localhost:3000/api/events"); // API to fetch events
-        const imageUrls = res.data.events.map((event) => event.imageUrl);
-        const pamphletUrls = res.data.events.map((event) => event.pamphletUrl).filter(Boolean);
-
-        // Merge images & pamphlets for carousel
-        setCarouselItems([...imageUrls, ...pamphletUrls]);
+const imageUrls = res.data.events.map((event) => event.imageUrl);
+const pamphletUrls = res.data.events.map((event) => event.pamphletUrl).filter(Boolean);
+// Merge images & pamphlets for carousel
+setCarouselItems([...imageUrls, ...pamphletUrls]);
         setImages(imageUrls);
         setPamphlets(pamphletUrls);
       } catch (error) {

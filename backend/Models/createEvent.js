@@ -36,7 +36,7 @@ const createEvent = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    pamphletUrl: {
+    posterUrl: {
         type: String, // 🔥 New field to store the pamphlet URL
         required: false
     }

@@ -11,6 +11,8 @@ function EventList() {
   const [error, setError] = useState(null);
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const { user } = useAuth();
 
   // Fetch events from the backend
@@ -134,6 +136,14 @@ function EventList() {
               transition={{ duration: 0.4, delay: index * 0.1 }}
               className="bg-white/50 backdrop-blur-lg shadow-lg rounded-2xl p-6 border border-gray-200"
             >
+              {/* Show poster image on card if available */}
+              {event.posterUrl && (
+                <img
+                  src={event.posterUrl}
+                  alt="Event Poster"
+                  className="w-full h-48 object-contain rounded-lg border mb-4"
+                />
+              )}
               <h3 className="text-2xl font-semibold text-gray-900 mb-2">{event.title}</h3>
               <p className="text-gray-700"><strong>📅 Date:</strong> {event.date}</p>
               <p className="text-gray-700"><strong>⏰ Time:</strong> {event.time}</p>
@@ -143,17 +153,27 @@ function EventList() {
               <p className="text-gray-600 mt-2">{event.description}</p>
 
               <div className="mt-4 flex justify-between items-center">
-                {event.eventLink && (
-                  <a
-                    href={event.eventLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-all"
+                <div className="flex gap-2">
+                  {event.eventLink && (
+                    <a
+                      href={event.eventLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-all"
+                    >
+                      <FaExternalLinkAlt className="mr-2" /> Event Link
+                    </a>
+                  )}
+                  <button
+                    onClick={() => {
+                      setSelectedEvent(event);
+                      setModalOpen(true);
+                    }}
+                    className="inline-flex items-center bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all"
                   >
-                    <FaExternalLinkAlt className="mr-2" /> Event Link
-                  </a>
-                )}
-
+                    View More
+                  </button>
+                </div>
                 {user && (
                   (user.role === "masterAdmin" ||
                   user.role === "superAdminEng" ||
@@ -172,6 +192,30 @@ function EventList() {
         </div>
       ) : (
         <div className="text-center text-gray-500 text-lg">No events available.</div>
+      )}
+
+      {/* Modal for poster */}
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+          <div className="bg-white rounded-xl shadow-lg p-6 max-w-lg w-full relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-2xl"
+              onClick={() => setModalOpen(false)}
+            >
+              &times;
+            </button>
+            <h2 className="text-xl font-bold mb-4">{selectedEvent?.title}</h2>
+            {selectedEvent?.posterUrl ? (
+              <img
+                src={selectedEvent.posterUrl}
+                alt="Event Poster"
+                className="w-full h-96 object-contain rounded-lg border"
+              />
+            ) : (
+              <div className="text-gray-500 text-center py-10">No poster available for this event.</div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

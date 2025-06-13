@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'; // Import useLocation
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NavbarEng from './componentsEng/NavbarEng';
@@ -17,7 +17,22 @@ import MainDashboard from './pages/MainDashboard';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import ExternalEvents from './pages/ExternalEvents';
+import ChatbotPopup from './components/ChatbotPopup';
 
+// Helper component to conditionally render ChatbotPopup
+const LayoutWithChatbot = () => {
+  const location = useLocation();
+  const hideChatbotOnPaths = ['/', '/login']; // Paths to hide chatbot
+
+  const shouldShowChatbot = !hideChatbotOnPaths.includes(location.pathname);
+
+  return (
+    <>
+      {shouldShowChatbot && <ChatbotPopup />}
+      <ToastContainer />
+    </>
+  );
+};
 
 function App() {
   return (
@@ -125,7 +140,7 @@ function App() {
             />
             <Route path="/external-events" element={<ExternalEvents />} />
           </Routes>
-          <ToastContainer />
+          <LayoutWithChatbot /> {/* Replace direct ChatbotPopup and ToastContainer with LayoutWithChatbot */}
         </div>
       </Router>
     </AuthProvider>

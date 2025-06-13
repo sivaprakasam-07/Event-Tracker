@@ -1,0 +1,23 @@
+Event 1:
+Title: ghjknm
+Date: Fri Jun 13 2025
+Time: 12:17
+Venue: bnmm
+Event Link: 
+Description: gcfgbhjnj
+Department: ECE
+Eligibility: gbhjnkj
+Poster URL: undefined
+
+
+Event 2:
+Title: INVENTIFY
+Date: Sat Jun 14 2025
+Time: 01:36
+Venue: Periwinkle
+Event Link: https://eaxion--24.web.app/
+Description: This is a hardware hackathon
+Department: ECE
+Eligibility: 3rd year students
+Poster URL: https://res.cloudinary.com/dgsjedufs/image/upload/v1749838034/event-posters/q4c71kj9ypa8hftiebqi.png
+

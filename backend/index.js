@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const uploadRoute = require("./Routes/Upload");
+const uploadRoutes = require("./Routes/UploadRoutes");
 const ScrapeRouter = require("./Routes/ScrapeRouter");
 const EventRouter = require("./Routes/EventsRouter");
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use("/event", EventRouter);
 app.use("/api", uploadRoute);
 app.use("/api", ScrapeRouter); // ✅ Devpost scraping routes
+app.use("/api/upload", uploadRoutes);
 
 const PORT = process.env.PORT || 8080;
 

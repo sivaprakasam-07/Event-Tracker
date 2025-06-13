@@ -2,25 +2,26 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
-import { useAuth } from "../context/AuthContext"; // Import useAuth
+import { useAuth } from "../context/AuthContext"; // Your custom Auth context
 
 function CreateEvent() {
-  const { user } = useAuth(); // Get the logged-in user's role
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  // Define department options based on the user's role
-  const departmentOptions = user.role === "CSETechHod"
+  // Role-based department dropdown
+  const departmentOptions = user?.role === "CSETechHod"
     ? ["CSE"]
-    : user.role === "CSECyberHod"
+    : user?.role === "CSECyberHod"
     ? ["CSE-Cyber Security"]
-    : user.role === "ITTechHod"
+    : user?.role === "ITTechHod"
     ? ["IT"]
-    : user.role === "ADSTechHod"
+    : user?.role === "ADSTechHod"
     ? ["ADS"]
-    : user.role === "ECETechHod"
+    : user?.role === "ECETechHod"
     ? ["ECE"]
-    : user.role === "EEETechHod"
+    : user?.role === "EEETechHod"
     ? ["EEE"]
-    : ["CSE", "CSE-Cyber Security", "IT", "ADS", "ECE", "EEE"]; // Default for admins
+    : ["CSE", "CSE-Cyber Security", "IT", "ADS", "ECE", "EEE"]; // Default for admin
 
   const [eventData, setEventData] = useState({
     title: "",
@@ -31,73 +32,76 @@ function CreateEvent() {
     eventLink: "",
     department: "",
     eligibility: "",
-    posterUrl: "", // Store uploaded poster URL here
+    posterUrl: "", // Will be filled after image upload
   });
 
   const [poster, setPoster] = useState(null);
   const [preview, setPreview] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEventData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  // Handle form submission
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setPoster(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
       let uploadedPosterUrl = "";
 
-      // If poster is uploaded, handle upload to Firebase
+      // Upload poster to backend -> Cloudinary
       if (poster) {
         const formData = new FormData();
         formData.append("file", poster);
 
         const uploadResponse = await axios.post(
-          "http://localhost:3000/upload/poster",
+          "http://localhost:3000/api/upload/poster", // Ensure this is your working backend route
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
-        uploadedPosterUrl = uploadResponse.data.url;
+
+        uploadedPosterUrl = uploadResponse.data.secure_url;
       }
 
-      const eventPayload = {
+      // Prepare final payload
+      const payload = {
         ...eventData,
-        posterUrl: uploadedPosterUrl,
+        posterUrl: uploadedPosterUrl || eventData.posterUrl,
       };
 
-      // API call to create event
-      await axios.post("http://localhost:3000/event/createEvent", eventPayload, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.post(
+        "http://localhost:3000/event/createEvent",
+        payload,
+        { headers: { "Content-Type": "application/json" } }
+      );
 
-      toast.success("🎉 Event Created Successfully!");
-      setTimeout(() => navigate("/technology/events"), 3000);
+      if (response.data.success) {
+        toast.success("🎉 Event Created Successfully!");
+        setTimeout(() => navigate("/technology/events"), 3000);
+      } else {
+        toast.error("⚠️ Failed to create event. Please try again!");
+      }
     } catch (err) {
-      console.error("Error occurred while creating event:", err);
-      toast.error("⚠️ Failed to create event. Try again!");
+      console.error("Error while creating event:", err);
+      toast.error("⚠️ Error creating event.");
+    } finally {
+      setLoading(false);
     }
-  };
-
-  // Handle input change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEventData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // Handle file selection
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setPoster(file);
-    setPreview(URL.createObjectURL(file)); // Generate preview URL
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center pt-20 px-4">
       <Toaster />
-      {/* Create Event Form Container */}
       <div className="w-full max-w-2xl bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl p-8">
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-6">
+        <h2 className="text-3xl font-bold text-center mb-6 text-gray-900">
           📅 Create New Event
         </h2>
 
@@ -111,13 +115,13 @@ function CreateEvent() {
               type="text"
               name="title"
               required
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
               value={eventData.title}
               onChange={handleChange}
             />
           </div>
 
-          {/* Date & Time */}
+          {/* Date and Time */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -127,7 +131,7 @@ function CreateEvent() {
                 type="date"
                 name="date"
                 required
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
                 value={eventData.date}
                 onChange={handleChange}
               />
@@ -140,7 +144,7 @@ function CreateEvent() {
                 type="time"
                 name="time"
                 required
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
                 value={eventData.time}
                 onChange={handleChange}
               />
@@ -156,7 +160,7 @@ function CreateEvent() {
               type="text"
               name="venue"
               required
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
               value={eventData.venue}
               onChange={handleChange}
             />
@@ -170,7 +174,7 @@ function CreateEvent() {
             <input
               type="url"
               name="eventLink"
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
               value={eventData.eventLink}
               onChange={handleChange}
               placeholder="https://example.com"
@@ -185,7 +189,7 @@ function CreateEvent() {
             <select
               name="department"
               required
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
               value={eventData.department}
               onChange={handleChange}
             >
@@ -206,7 +210,7 @@ function CreateEvent() {
             <textarea
               name="description"
               rows="4"
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
               value={eventData.description}
               onChange={handleChange}
             />
@@ -220,13 +224,13 @@ function CreateEvent() {
             <textarea
               name="eligibility"
               rows="2"
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
               value={eventData.eligibility}
               onChange={handleChange}
             />
           </div>
 
-          {/* File Upload (Poster) */}
+          {/* Poster Upload */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Event Poster (Optional)
@@ -239,7 +243,7 @@ function CreateEvent() {
             />
           </div>
 
-          {/* Poster Preview */}
+          {/* Preview */}
           {preview && (
             <div className="mt-4">
               <p className="text-sm font-medium text-gray-700 mb-2">
@@ -253,12 +257,15 @@ function CreateEvent() {
             </div>
           )}
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300"
+            disabled={loading}
+            className={`w-full ${
+              loading ? "bg-gray-400" : "bg-indigo-600"
+            } text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300`}
           >
-            Create Event
+            {loading ? "Creating Event..." : "Create Event"}
           </button>
         </form>
       </div>

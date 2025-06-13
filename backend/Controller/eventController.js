@@ -1,132 +1,165 @@
 const CreateEvent = require("../models/createEvent");
-const { MongoClient } = require('mongodb');
-require('dotenv').config();
+const { MongoClient } = require("mongodb");
+const multer = require("multer");
+const cloudinary = require("../config/cloudinaryConfig"); // ✅ Corrected file path
+require("dotenv").config();
 
 const uri = process.env.MONGO_CONN;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
+// Multer Config - Upload to Buffer
+const storage = multer.memoryStorage();
+const upload = multer({ storage }).single("pamphlet");
+
+// 🎉 Create Event with Pamphlet Upload
 const createEvent = async (req, res) => {
-    try {
-        const {
-            title,
-            date,
-            time,
-            venue,
-            eventLink,
-            description,
-            department,
-            eligibility
-        } = req.body;
+  try {
+    const {
+      title,
+      date,
+      time,
+      venue,
+      eventLink,
+      description,
+      department,
+      eligibility,
+      posterUrl: posterUrlFromBody, // <-- get posterUrl from body
+    } = req.body;
 
-        const event = new CreateEvent({
-            title,
-            date,
-            time,
-            venue,
-            eventLink,
-            description,
-            department,
-            eligibility
-        });
+    let posterUrl = posterUrlFromBody || ""; // Use posterUrl from body if present
 
-        await event.save();
-        console.log("Created event", event);
+    if (req.file) {
+      // 🔥 Upload to Cloudinary if file is uploaded
+      const result = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { resource_type: "image", folder: "event_pamphlets" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        uploadStream.end(req.file.buffer);
+      });
 
-        // Fetch users from the database
-        await client.connect();
-        const database = client.db('event-tracker1');
-        const usersCollection = database.collection('users');
-        const users = await usersCollection.find({}).toArray();
-
-        // Remove email sending logic
-
-        res.status(201).json({
-            message: "Created event successfully",
-            success: true
-        });
-
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            message: "An error occurred while creating event",
-            success: false
-        });
-    } finally {
-        await client.close();
+      posterUrl = result.secure_url;
     }
+
+    const event = new CreateEvent({
+      title,
+      date,
+      time,
+      venue,
+      eventLink,
+      description,
+      department,
+      eligibility,
+      posterUrl, // Always store the posterUrl (from body or Cloudinary)
+    });
+
+    await event.save();
+    console.log("Created event", event);
+
+    // 🎯 Fetch users from DB if needed
+    await client.connect();
+    const database = client.db("event-tracker1");
+    const usersCollection = database.collection("users");
+    const users = await usersCollection.find({}).toArray();
+
+    res.status(201).json({
+      message: "Created event successfully",
+      success: true,
+      event,
+    });
+  } catch (err) {
+    console.error("Error creating event:", err);
+    res.status(500).json({
+      message: "An error occurred while creating the event",
+      success: false,
+    });
+  } finally {
+    await client.close();
+  }
 };
 
+// 🎯 Get Events
 const getEvents = async (req, res) => {
-    try {
-        const events = await CreateEvent.find();
-        if (events.length == 0) {
-            return res.status(404).json({
-                message: "No events found",
-                success: false
-            });
-        }
-        res.status(200).json({
-            message: "Fetched events successfully",
-            success: true,
-            events
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: "An error occurred while fetching the data",
-            success: false
-        });
+  try {
+    const events = await CreateEvent.find();
+    if (events.length === 0) {
+      return res.status(404).json({
+        message: "No events found",
+        success: false,
+      });
     }
+    res.status(200).json({
+      message: "Fetched events successfully",
+      success: true,
+      events,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "An error occurred while fetching the data",
+      success: false,
+    });
+  }
 };
 
+// 🎯 Delete Event
 const deleteEvent = async (req, res) => {
-    try {
-        const { id } = req.params;
-        await CreateEvent.findByIdAndDelete(id);
-        res.status(200).json({
-            message: "Deleted event successfully",
-            success: true
-        });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            message: "An error occurred while deleting event",
-            success: false
-        });
-    }
+  try {
+    const { id } = req.params;
+    await CreateEvent.findByIdAndDelete(id);
+    res.status(200).json({
+      message: "Deleted event successfully",
+      success: true,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "An error occurred while deleting the event",
+      success: false,
+    });
+  }
 };
 
+// 🎯 Update Participants
 const updateParticipants = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { participants } = req.body;
+  try {
+    const { id } = req.params;
+    const { participants } = req.body;
 
-        const event = await CreateEvent.findByIdAndUpdate(id, { participants }, { new: true });
+    const event = await CreateEvent.findByIdAndUpdate(
+      id,
+      { participants },
+      { new: true }
+    );
 
-        if (!event) {
-            return res.status(404).json({
-                message: "Event not found",
-                success: false
-            });
-        }
-
-        res.status(200).json({
-            message: "Participants updated successfully",
-            success: true,
-            event
-        });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            message: "An error occurred while updating participants",
-            success: false
-        });
+    if (!event) {
+      return res.status(404).json({
+        message: "Event not found",
+        success: false,
+      });
     }
+
+    res.status(200).json({
+      message: "Participants updated successfully",
+      success: true,
+      event,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "An error occurred while updating participants",
+      success: false,
+    });
+  }
 };
 
 module.exports = {
-    createEvent,
-    getEvents,
-    deleteEvent,
-    updateParticipants
+  createEvent,
+  getEvents,
+  deleteEvent,
+  updateParticipants,
+  upload, // ✅ Export upload to be used in the route
 };

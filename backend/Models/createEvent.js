@@ -35,6 +35,10 @@ const createEvent = new mongoose.Schema({
     participants: {
         type: Number,
         default: 0
+    },
+    posterUrl: {
+        type: String, // 🔥 New field to store the pamphlet URL
+        required: false
     }
 });
 

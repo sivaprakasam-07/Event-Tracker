@@ -1,189 +1,3 @@
-// // const puppeteer = require("puppeteer");
-// // const ScrapedEvent = require("../Models/scrapedEvent");
-
-// // const scrapeDevpost = async (req, res) => {
-// //     try {
-// //         const browser = await puppeteer.launch({ headless: "new" });
-// //         const page = await browser.newPage();
-
-// //         await page.goto("https://devpost.com/hackathons", {
-// //             waitUntil: "networkidle2",
-// //         });
-
-// //         const events = await page.evaluate(() => {
-// //             const tiles = document.querySelectorAll(".hackathon-tile");
-// //             const result = [];
-// //             tiles.forEach((tile) => {
-// //                 const title = tile.querySelector("h3")?.innerText;
-// //                 const link = tile.querySelector("a.tile-anchor")?.href;
-// //                 if (title && link) {
-// //                     result.push({
-// //                         title,
-// //                         url: link,
-// //                         type: "hackathon",
-// //                         source: "Devpost",
-// //                     });
-// //                 }
-// //             });
-// //             return result;
-// //         });
-
-// //         await browser.close();
-
-// //         let savedCount = 0;
-// //         for (const event of events) {
-// //             const exists = await ScrapedEvent.findOne({ url: event.url });
-// //             if (!exists) {
-// //                 await ScrapedEvent.create(event);
-// //                 savedCount++;
-// //             }
-// //         }
-
-// //         res.status(200).json({ message: "Scraped successfully", count: savedCount });
-// //     } catch (err) {
-// //         console.error("Scrape failed:", err);
-// //         res.status(500).json({ message: "Scraping failed", error: err.message });
-// //     }
-// // };
-
-// // const getScrapedEvents = async (req, res) => {
-// //     try {
-// //         const events = await ScrapedEvent.find({});
-// //         res.status(200).json(events);
-// //     } catch (err) {
-// //         console.error("Failed to get scraped events:", err);
-// //         res
-// //             .status(500)
-// //             .json({ message: "Failed to retrieve events", error: err.message });
-// //     }
-// // };
-
-// // module.exports = {
-// //     scrapeDevpost,
-// //     getScrapedEvents,
-// // };
-
-
-// const puppeteer = require("puppeteer");
-// const ScrapedEvent = require("../Models/scrapedEvent");
-
-// // DEVPOST SCRAPER
-// const scrapeDevpost = async (req, res) => {
-//   try {
-//     const browser = await puppeteer.launch({ headless: "new" });
-//     const page = await browser.newPage();
-//     await page.goto("https://devpost.com/hackathons", {
-//       waitUntil: "networkidle2",
-//     });
-
-//     const events = await page.evaluate(() => {
-//       const tiles = document.querySelectorAll(".hackathon-tile");
-//       const result = [];
-//       tiles.forEach((tile) => {
-//         const title = tile.querySelector("h3")?.innerText;
-//         const link = tile.querySelector("a.tile-anchor")?.href;
-//         if (title && link) {
-//           result.push({
-//             title,
-//             url: link,
-//             type: "hackathon",
-//             source: "Devpost",
-//           });
-//         }
-//       });
-//       return result;
-//     });
-
-//     await browser.close();
-
-//     let savedCount = 0;
-//     for (const event of events) {
-//       const exists = await ScrapedEvent.findOne({ url: event.url });
-//       if (!exists) {
-//         await ScrapedEvent.create(event);
-//         savedCount++;
-//       }
-//     }
-
-//     res.status(200).json({ message: "Devpost scraping done", count: savedCount });
-//   } catch (err) {
-//     console.error("Devpost Scrape failed:", err);
-//     res.status(500).json({ message: "Devpost scraping failed", error: err.message });
-//   }
-// };
-
-// // UNSTOP SCRAPER (for hackathon, symposium, workshop)
-// const scrapeUnstop = async (req, res) => {
-//   try {
-//     const browser = await puppeteer.launch({ headless: "new" });
-//     const page = await browser.newPage();
-//     await page.goto("https://unstop.com/hackathons", { waitUntil: "networkidle2" });
-
-//     const events = await page.evaluate(() => {
-//       const results = [];
-//       const cards = document.querySelectorAll(".css-1spfp1e"); // Update if selector changes
-//       cards.forEach((card) => {
-//         const title = card.querySelector(".card-heading")?.innerText;
-//         const url = card.querySelector("a")?.href;
-//         if (title && url) {
-//           // Try to infer type from title or URL
-//           let type = "hackathon";
-//           if (title.toLowerCase().includes("symposium")) type = "symposium";
-//           else if (title.toLowerCase().includes("workshop")) type = "workshop";
-
-//           results.push({
-//             title,
-//             url,
-//             type,
-//             source: "Unstop",
-//           });
-//         }
-//       });
-//       return results;
-//     });
-
-//     await browser.close();
-
-//     let savedCount = 0;
-//     for (const event of events) {
-//       const exists = await ScrapedEvent.findOne({ url: event.url });
-//       if (!exists) {
-//         await ScrapedEvent.create(event);
-//         savedCount++;
-//       }
-//     }
-
-//     res.status(200).json({ message: "Unstop scraping done", count: savedCount });
-//   } catch (err) {
-//     console.error("Unstop Scrape failed:", err);
-//     res.status(500).json({ message: "Unstop scraping failed", error: err.message });
-//   }
-// };
-
-// // GET SCRAPED EVENTS WITH FILTER
-// const getScrapedEvents = async (req, res) => {
-//   try {
-//     const { type, source } = req.query;
-//     const query = {};
-
-//     if (type) query.type = type.toLowerCase();
-//     if (source) query.source = source;
-
-//     const events = await ScrapedEvent.find(query);
-//     res.status(200).json(events);
-//   } catch (err) {
-//     console.error("Failed to get scraped events:", err);
-//     res.status(500).json({ message: "Failed to retrieve events", error: err.message });
-//   }
-// };
-
-// module.exports = {
-//   scrapeDevpost,
-//   scrapeUnstop,
-//   getScrapedEvents,
-// };
-
-
 const puppeteer = require("puppeteer");
 const ScrapedEvent = require("../Models/scrapedEvent");
 
@@ -290,7 +104,18 @@ const scrapeUnstop = async (req, res) => {
 // FETCH SCRAPED EVENTS
 const getScrapedEvents = async (req, res) => {
     try {
-        const events = await ScrapedEvent.find({});
+        const { type, source } = req.query; // Get query parameters
+        const filter = {}; // Initialize an empty filter object
+
+        if (type) {
+            filter.type = type.toLowerCase(); // Add type to filter if provided and convert to lowercase
+        }
+        if (source) {
+            filter.source = source; // Add source to filter if provided
+        }
+
+        // Use the filter in the find query
+        const events = await ScrapedEvent.find(filter);
         res.status(200).json(events);
     } catch (err) {
         console.error("Failed to get scraped events:", err);

@@ -48,7 +48,9 @@ const scrapeDevpost = async (req, res) => {
 
 const getScrapedEvents = async (req, res) => {
     try {
-        const events = await ScrapedEvent.find({});
+        const { type } = req.query; // Get the type from query parameters
+        const query = type ? { type } : {}; // Create a query object, empty if no type is provided
+        const events = await ScrapedEvent.find(query); // Use the query to filter events
         res.status(200).json(events);
     } catch (err) {
         console.error("Failed to get scraped events:", err);

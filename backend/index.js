@@ -13,6 +13,7 @@ const uploadRoutes = require("./Routes/UploadRoutes");
 const ScrapeRouter = require("./Routes/ScrapeRouter");
 const EventRouter = require("./Routes/EventsRouter");
 const authRoutes = require("./Routes/auth");
+const knowafestRouter = require("./Routes/knowafestRouter"); // Added Knowafest router
 
 // Middlewares
 app.use(cors({
@@ -36,6 +37,7 @@ app.use("/api", uploadRoute);
 app.use("/api", ScrapeRouter);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/auth", authRoutes); // ✅ Login/auth route
+app.use("/api/scrape", knowafestRouter); // Added Knowafest route
 
 // PORT config
 const PORT = process.env.PORT || 8080;

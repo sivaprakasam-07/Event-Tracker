@@ -16,12 +16,12 @@ const ExternalEvents = () => {
             .then((res) => {
                 if (!res.ok) throw new Error(`Devpost API error! status: ${res.status}`);
                 return res.json();
-            })8
-                .then(data => {
-                    // Assuming Devpost data is an array of events and might need a source property
-                    // And assuming it has _id, title, url
-                    return data.map(event => ({ ...event, source: event.source || 'Devpost' }));
-                });
+            })
+            .then(data => {
+                // Assuming Devpost data is an array of events and might need a source property
+                // And assuming it has _id, title, url
+                return data.map(event => ({ ...event, source: event.source || 'Devpost' }));
+            });
 
         const fetchKnowafestEvents = fetch("http://localhost:3000/api/scrape/knowafest-hackathons")
             .then((res) => {

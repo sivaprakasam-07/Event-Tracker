@@ -1,5 +1,5 @@
-const CreateEventEng = require("../models/CreateEventEng"); // New model
-const CreateEventTech = require("../models/CreateEventTech"); // New model
+const CreateEventEng = require("../Models/CreateEventEng"); // New model
+const CreateEventTech = require("../Models/CreateEventTech"); // New model
 const { MongoClient } = require("mongodb");
 const multer = require("multer");
 const cloudinary = require("../config/cloudinaryConfig"); // ✅ Corrected file path

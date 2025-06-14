@@ -19,10 +19,13 @@ export const AuthProvider = ({ children }) => {
     toast.success('Logged in successfully');
   };
 
-  const logout = () => {
+  const logout = (navigate) => {
     localStorage.removeItem('user');
     setUser(null);
     toast.success('Logged out successfully');
+    if (navigate) {
+      navigate('/');
+    }
   };
 
   return (

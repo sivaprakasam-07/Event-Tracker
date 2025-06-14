@@ -20,7 +20,7 @@ function EventList() {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get("http://localhost:3000/event/getEvents");
+            const response = await axios.get("http://localhost:3000/event/getEvents?eventType=Tech"); // Added eventType query param
             const eventsData = response.data.events;
 
             if (Array.isArray(eventsData)) {
@@ -39,7 +39,7 @@ function EventList() {
     // Delete an event
     const handleDelete = async (eventId) => {
         try {
-            await axios.delete(`http://localhost:3000/event/deleteEvent/${eventId}`);
+            await axios.delete(`http://localhost:3000/event/deleteEvent/${eventId}?eventType=Tech`); // Added eventType query param
             setEvents(events.filter((event) => event._id !== eventId));
             toast.success("🗑️ Event Deleted Successfully!");
         } catch (error) {
@@ -174,8 +174,8 @@ function EventList() {
                                 </div>
                                 {user && (
                                     (user.role === "masterAdmin" ||
-                                    user.role === "superAdminTech" ||
-                                    (user.role.endsWith("TechHod") && user.role.startsWith(event.department))) && (
+                                        user.role === "superAdminTech" ||
+                                        (user.role.endsWith("TechHod") && user.role.startsWith(event.department))) && (
                                         <button
                                             onClick={() => handleDelete(event._id)}
                                             className="inline-flex items-center bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all"

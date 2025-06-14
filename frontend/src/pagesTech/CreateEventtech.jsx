@@ -12,16 +12,16 @@ function CreateEvent() {
   const departmentOptions = user?.role === "CSETechHod"
     ? ["CSE"]
     : user?.role === "CSECyberHod"
-    ? ["CSE-Cyber Security"]
-    : user?.role === "ITTechHod"
-    ? ["IT"]
-    : user?.role === "ADSTechHod"
-    ? ["ADS"]
-    : user?.role === "ECETechHod"
-    ? ["ECE"]
-    : user?.role === "EEETechHod"
-    ? ["EEE"]
-    : ["CSE", "CSE-Cyber Security", "IT", "ADS", "ECE", "EEE"]; // Default for admin
+      ? ["CSE-Cyber Security"]
+      : user?.role === "ITTechHod"
+        ? ["IT"]
+        : user?.role === "ADSTechHod"
+          ? ["ADS"]
+          : user?.role === "ECETechHod"
+            ? ["ECE"]
+            : user?.role === "EEETechHod"
+              ? ["EEE"]
+              : ["CSE", "CSE-Cyber Security", "IT", "ADS", "ECE", "EEE"]; // Default for admin
 
   const [eventData, setEventData] = useState({
     title: "",
@@ -75,6 +75,7 @@ function CreateEvent() {
       const payload = {
         ...eventData,
         posterUrl: uploadedPosterUrl || eventData.posterUrl,
+        eventType: "Tech", // Added eventType
       };
 
       const response = await axios.post(
@@ -261,9 +262,8 @@ function CreateEvent() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full ${
-              loading ? "bg-gray-400" : "bg-indigo-600"
-            } text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300`}
+            className={`w-full ${loading ? "bg-gray-400" : "bg-indigo-600"
+              } text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300`}
           >
             {loading ? "Creating Event..." : "Create Event"}
           </button>

@@ -1,9 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Imported useNavigate
 import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion";
 
 function Navbar() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate(); // Initialized useNavigate
+
+  const handleLogout = () => {
+    logout(navigate); // Passed navigate to logout function
+  };
 
   return (
     <motion.nav
@@ -41,7 +46,7 @@ function Navbar() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={logout}
+                  onClick={handleLogout} // Changed to handleLogout
                   className="ml-4 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md transition duration-300 hover:bg-indigo-700"
                 >
                   Logout

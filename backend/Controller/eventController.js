@@ -1,4 +1,5 @@
-const CreateEvent = require("../models/createEvent");
+const CreateEventEng = require("../models/CreateEventEng"); // New model
+const CreateEventTech = require("../models/CreateEventTech"); // New model
 const { MongoClient } = require("mongodb");
 const multer = require("multer");
 const cloudinary = require("../config/cloudinaryConfig"); // ✅ Corrected file path
@@ -24,6 +25,7 @@ const createEvent = async (req, res) => {
       department,
       eligibility,
       posterUrl: posterUrlFromBody, // <-- get posterUrl from body
+      eventType // Added eventType to distinguish between Eng and Tech
     } = req.body;
 
     let posterUrl = posterUrlFromBody || ""; // Use posterUrl from body if present
@@ -44,17 +46,37 @@ const createEvent = async (req, res) => {
       posterUrl = result.secure_url;
     }
 
-    const event = new CreateEvent({
-      title,
-      date,
-      time,
-      venue,
-      eventLink,
-      description,
-      department,
-      eligibility,
-      posterUrl, // Always store the posterUrl (from body or Cloudinary)
-    });
+    let event;
+    if (eventType === "Eng") {
+      event = new CreateEventEng({
+        title,
+        date,
+        time,
+        venue,
+        eventLink,
+        description,
+        department,
+        eligibility,
+        posterUrl,
+      });
+    } else if (eventType === "Tech") {
+      event = new CreateEventTech({
+        title,
+        date,
+        time,
+        venue,
+        eventLink,
+        description,
+        department,
+        eligibility,
+        posterUrl,
+      });
+    } else {
+      return res.status(400).json({
+        message: "Invalid event type",
+        success: false,
+      });
+    }
 
     await event.save();
     console.log("Created event", event);
@@ -84,7 +106,22 @@ const createEvent = async (req, res) => {
 // 🎯 Get Events
 const getEvents = async (req, res) => {
   try {
-    const events = await CreateEvent.find();
+    const { eventType } = req.query; // Get eventType from query params
+    let events;
+
+    if (eventType === "Eng") {
+      events = await CreateEventEng.find();
+    } else if (eventType === "Tech") {
+      events = await CreateEventTech.find();
+    } else {
+      // If no eventType is specified, or an invalid one, return an error or all events
+      // For now, returning an error.
+      return res.status(400).json({
+        message: "Please specify a valid event type (Eng or Tech)",
+        success: false,
+      });
+    }
+
     if (events.length === 0) {
       return res.status(404).json({
         message: "No events found",
@@ -109,7 +146,27 @@ const getEvents = async (req, res) => {
 const deleteEvent = async (req, res) => {
   try {
     const { id } = req.params;
-    await CreateEvent.findByIdAndDelete(id);
+    const { eventType } = req.query; // Added eventType to distinguish
+
+    let deletedEvent;
+    if (eventType === "Eng") {
+      deletedEvent = await CreateEventEng.findByIdAndDelete(id);
+    } else if (eventType === "Tech") {
+      deletedEvent = await CreateEventTech.findByIdAndDelete(id);
+    } else {
+      return res.status(400).json({
+        message: "Invalid event type for deletion",
+        success: false,
+      });
+    }
+
+    if (!deletedEvent) {
+      return res.status(404).json({
+        message: "Event not found",
+        success: false,
+      });
+    }
+
     res.status(200).json({
       message: "Deleted event successfully",
       success: true,
@@ -127,13 +184,27 @@ const deleteEvent = async (req, res) => {
 const updateParticipants = async (req, res) => {
   try {
     const { id } = req.params;
-    const { participants } = req.body;
+    const { participants, eventType } = req.body; // Added eventType
 
-    const event = await CreateEvent.findByIdAndUpdate(
-      id,
-      { participants },
-      { new: true }
-    );
+    let event;
+    if (eventType === "Eng") {
+      event = await CreateEventEng.findByIdAndUpdate(
+        id,
+        { participants },
+        { new: true }
+      );
+    } else if (eventType === "Tech") {
+      event = await CreateEventTech.findByIdAndUpdate(
+        id,
+        { participants },
+        { new: true }
+      );
+    } else {
+      return res.status(400).json({
+        message: "Invalid event type for updating participants",
+        success: false,
+      });
+    }
 
     if (!event) {
       return res.status(404).json({

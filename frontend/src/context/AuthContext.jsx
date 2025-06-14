@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
 
 const AuthContext = createContext(null);
 
@@ -16,13 +15,11 @@ export const AuthProvider = ({ children }) => {
   const login = (userData) => {
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
-    toast.success('Logged in successfully');
   };
 
   const logout = (navigate) => {
     localStorage.removeItem('user');
     setUser(null);
-    toast.success('Logged out successfully');
     if (navigate) {
       navigate('/');
     }

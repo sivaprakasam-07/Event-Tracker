@@ -1,23 +1,45 @@
-Event 1:
-Title: ghjknm
-Date: Fri Jun 13 2025
-Time: 12:17
-Venue: bnmm
-Event Link: 
-Description: gcfgbhjnj
-Department: ECE
-Eligibility: gbhjnkj
-Poster URL: undefined
+Generated on: 14/6/2025, 11:54:07 pm
 
+------------------------------------
+    ENGINEERING EVENTS (Manual)    
+------------------------------------
 
-Event 2:
-Title: INVENTIFY
-Date: Sat Jun 14 2025
-Time: 01:36
+Event 1 (Engineering):
+Title: HEXATHON
+Date: Thu Jun 19 2025
+Time: 02:44
 Venue: Periwinkle
-Event Link: https://eaxion--24.web.app/
-Description: This is a hardware hackathon
+Event Link: N/A
+Description: 24 hrs of thrilling hackthon which involves the coding contribution and team work
+Department: CSE
+Eligibility: all year students
+Poster URL: https://res.cloudinary.com/dgsjedufs/image/upload/v1749924997/event-posters/kawdyo4igq22ek915r8b.png
+
+
+Event 2 (Engineering):
+Title: PENTAHON
+Date: Sun Jun 15 2025
+Time: 09:46
+Venue: Tech AV hall
+Event Link: N/A
+Description: A cyber security event which leads the crew to capture the flag and to prove the strength of them
+Department: CSE-Cyber Security
+Eligibility: Cyber security pep students and dept of Cyber security 
+Poster URL: https://res.cloudinary.com/dgsjedufs/image/upload/v1749925124/event-posters/ittayipmdbqbjfft3ebe.png
+
+
+------------------------------------
+    TECHNOLOGY EVENTS (Manual)     
+------------------------------------
+
+Event 1 (Technology):
+Title: INVENTIFY
+Date: Tue Jun 17 2025
+Time: 03:48
+Venue: TECH AV hall-2
+Event Link: N/A
+Description: A Hardware based hackathon to out take the talents of ece students
 Department: ECE
-Eligibility: 3rd year students
-Poster URL: https://res.cloudinary.com/dgsjedufs/image/upload/v1749838034/event-posters/q4c71kj9ypa8hftiebqi.png
+Eligibility: third year only
+Poster URL: https://res.cloudinary.com/dgsjedufs/image/upload/v1749925224/event-posters/her4uzb4zjekokotj8sf.png
 

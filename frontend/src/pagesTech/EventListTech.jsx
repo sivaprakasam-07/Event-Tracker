@@ -134,14 +134,6 @@ function EventList() {
                             transition={{ duration: 0.4, delay: index * 0.1 }}
                             className="bg-white/50 backdrop-blur-lg shadow-lg rounded-2xl p-6 border border-gray-200"
                         >
-                            {/* Show poster image on card if available */}
-                            {event.posterUrl && (
-                                <img
-                                    src={event.posterUrl}
-                                    alt="Event Poster"
-                                    className="w-full h-48 object-contain rounded-lg border mb-4"
-                                />
-                            )}
                             <h3 className="text-2xl font-semibold text-gray-900 mb-2">{event.title}</h3>
                             <p className="text-gray-700"><strong>📅 Date:</strong> {event.date}</p>
                             <p className="text-gray-700"><strong>⏰ Time:</strong> {event.time}</p>
@@ -193,26 +185,45 @@ function EventList() {
             )}
 
             {/* Modal for poster */}
-            {modalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-                    <div className="bg-white rounded-xl shadow-lg p-6 max-w-lg w-full relative">
+            {modalOpen && selectedEvent && ( // Added selectedEvent check
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="bg-white rounded-xl shadow-2xl p-6 max-w-lg w-full relative max-h-[90vh] overflow-y-auto">
                         <button
-                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-2xl"
                             onClick={() => setModalOpen(false)}
+                            className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-3xl z-10"
                         >
                             &times;
                         </button>
-                        <h2 className="text-xl font-bold mb-4">{selectedEvent?.title}</h2>
-                        {selectedEvent?.posterUrl ? (
+                        <h3 className="text-3xl font-bold text-gray-900 mb-4">{selectedEvent.title}</h3>
+                        {selectedEvent.posterUrl && (
                             <img
                                 src={selectedEvent.posterUrl}
                                 alt="Event Poster"
-                                className="w-full h-96 object-contain rounded-lg border"
+                                className="w-full h-auto object-contain rounded-lg border mb-4 shadow-md"
                             />
-                        ) : (
-                            <div className="text-gray-500 text-center py-10">No poster available for this event.</div>
                         )}
-                    </div>
+                        <p className="text-gray-700 mb-1"><strong>📅 Date:</strong> {selectedEvent.date}</p>
+                        <p className="text-gray-700 mb-1"><strong>⏰ Time:</strong> {selectedEvent.time}</p>
+                        <p className="text-gray-700 mb-1"><strong>📍 Venue:</strong> {selectedEvent.venue}</p>
+                        <p className="text-gray-700 mb-1"><strong>🏛 Department:</strong> {selectedEvent.department}</p>
+                        <p className="text-gray-700 mb-3"><strong>🎓 Eligibility:</strong> {selectedEvent.eligibility}</p>
+                        <p className="text-gray-600 mt-2 mb-4 whitespace-pre-wrap">{selectedEvent.description}</p>
+
+                        {selectedEvent.eventLink && (
+                            <a
+                                href={selectedEvent.eventLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-all text-sm"
+                            >
+                                <FaExternalLinkAlt className="mr-2" /> Event Link
+                            </a>
+                        )}
+                    </motion.div>
                 </div>
             )}
         </div>

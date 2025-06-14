@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'; // Import useLocation
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster } from 'react-hot-toast'; // Added
 import NavbarEng from './componentsEng/NavbarEng';
 import NavbarTech from './componentsTech/NavbarTech';
 import DashboardEng from './pagesEng/DashboardEng';
@@ -29,7 +28,7 @@ const LayoutWithChatbot = () => {
   return (
     <>
       {shouldShowChatbot && <ChatbotPopup />}
-      <ToastContainer />
+      {/* <ToastContainer /> */} {/* Removed */}
     </>
   );
 };
@@ -38,6 +37,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        <Toaster /> {/* Added global Toaster */}
         <div className="min-h-screen bg-gray-50">
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -140,8 +140,8 @@ function App() {
             />
             <Route path="/external-events" element={<ExternalEvents />} />
           </Routes>
-          <LayoutWithChatbot /> {/* Replace direct ChatbotPopup and ToastContainer with LayoutWithChatbot */}
         </div>
+        <LayoutWithChatbot /> {/* This can remain if ChatbotPopup is still needed globally */}
       </Router>
     </AuthProvider>
   );

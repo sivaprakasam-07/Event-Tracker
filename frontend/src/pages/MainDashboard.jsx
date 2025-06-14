@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import toast from "react-hot-toast"; // Toaster is now global in App.jsx, but individual toast calls remain
-import { Swiper, SwiperSlide } from "swiper/react"; // Corrected import
-import "swiper/css"; // Corrected import for Swiper 8+
+import toast, { Toaster } from "react-hot-toast";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
@@ -21,37 +19,21 @@ export default function MainDashboard() {
   useEffect(() => {
     const fetchMedia = async () => {
       try {
-        // Determine event type based on user role for fetching relevant events
-        let eventType = "all"; // Default to all, or handle specific logic if needed
-        if (user && user.role) {
-          if (user.role.toLowerCase().includes("eng")) {
-            eventType = "engineering";
-          } else if (user.role.toLowerCase().includes("tech")) {
-            eventType = "technology";
-          }
-        }
-
-        const res = await axios.get(`http://localhost:3000/api/events?eventType=${eventType}`);
-        const imageUrls = res.data.events.map((event) => event.imageUrl).filter(Boolean);
+        const res = await axios.get("http://localhost:3000/api/events"); // API to fetch events
+        const imageUrls = res.data.events.map((event) => event.imageUrl);
         const pamphletUrls = res.data.events.map((event) => event.pamphletUrl).filter(Boolean);
-
+        // Merge images & pamphlets for carousel
         setCarouselItems([...imageUrls, ...pamphletUrls]);
-        setImages(imageUrls); // This state might be redundant if carouselItems is primary
-        setPamphlets(pamphletUrls); // This state might be redundant
-
-        if (imageUrls.length === 0 && pamphletUrls.length === 0) {
-          // toast.info(\"No images or pamphlets to display currently.\"); // Optional: inform if no media
-        }
+        setImages(imageUrls);
+        setPamphlets(pamphletUrls);
       } catch (error) {
         console.error("Error fetching media:", error);
-        // toast.error(\"⚠️ Failed to load images or pamphlets.\"); // Toast for error is kept
+        toast.error("⚠️ Failed to load images or pamphlets.");
       }
     };
 
-    if (user) { // Fetch media only if user is available
-      fetchMedia();
-    }
-  }, [user]); // Add user as a dependency
+    fetchMedia();
+  }, []);
 
   // 🚀 Handle Navigation Based on Role
   const handleNavigate = (path) => {
@@ -70,7 +52,7 @@ export default function MainDashboard() {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-6">
-      {/* <Toaster /> Removed, Toaster is global in App.jsx */}
+      <Toaster />
       <div className="backdrop-blur-md bg-white p-10 rounded-2xl shadow-lg text-center w-full max-w-3xl">
         {/* 🎠 Updated Carousel Section */}
         {carouselItems.length > 0 ? (
@@ -94,7 +76,7 @@ export default function MainDashboard() {
             ))}
           </Swiper>
         ) : (
-          <p className="text-gray-500 mb-6">No images or pamphlets available for your department.</p>
+          <p className="text-gray-500 mb-6">⚠️ No images or pamphlets available.</p>
         )}
 
         <h1 className="text-3xl font-bold text-gray-900 mb-6">🎯 Select Your Department</h1>

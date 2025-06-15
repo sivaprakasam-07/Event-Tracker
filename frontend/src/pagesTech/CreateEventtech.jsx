@@ -9,17 +9,19 @@ import {
   InputLabel,
   FormControl,
   CircularProgress,
-  styled, // Added
+  styled,
+  Snackbar, // Ensured import
+  Alert,    // Ensured import
 } from "@mui/material";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'; // Added
-import SendIcon from '@mui/icons-material/Send'; // Added
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import SendIcon from '@mui/icons-material/Send';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast, Toaster } from "react-hot-toast";
+// import { toast, Toaster } from "react-hot-toast"; // Remains removed
 import { useAuth } from "../context/AuthContext";
 
-// Added VisuallyHiddenInput
+// VisuallyHiddenInput definition (assuming it's correctly placed above the component)
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -66,6 +68,10 @@ export default function CreateEventTech() {
   const [poster, setPoster] = useState(null);
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
+  // Snackbar state - ensuring it's identical to CreateEventEng.jsx
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -76,6 +82,14 @@ export default function CreateEventTech() {
     const file = e.target.files[0];
     setPoster(file);
     setPreview(URL.createObjectURL(file));
+  };
+
+  // handleSnackbarClose - ensuring it's identical to CreateEventEng.jsx
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   const handleSubmit = async (e) => {
@@ -109,15 +123,22 @@ export default function CreateEventTech() {
         { headers: { "Content-Type": "application/json" } }
       );
 
+      // Snackbar logic - ensuring it's identical to CreateEventEng.jsx
       if (response.data.success) {
-        toast.success("🎉 Event Created Successfully!");
+        setSnackbarMessage("🎉 Event Created Successfully!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
         setTimeout(() => navigate("/technology/events"), 3000);
       } else {
-        toast.error("⚠️ Failed to create event. Please try again!");
+        setSnackbarMessage("⚠️ Failed to create event. Please try again!");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
       }
     } catch (err) {
       console.error("Event creation failed:", err);
-      toast.error("⚠️ Error creating event.");
+      setSnackbarMessage("⚠️ Error creating event.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     } finally {
       setLoading(false);
     }
@@ -125,7 +146,21 @@ export default function CreateEventTech() {
 
   return (
     <Container maxWidth="sm" sx={{ pt: 10 }}>
-      <Toaster />
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      // anchorOrigin and custom Alert sx removed for a more default appearance
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }} // Standard width, other custom styles removed
+        // variant="filled" removed, defaults to standard
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <Box
         sx={{
           p: 3,
@@ -243,11 +278,11 @@ export default function CreateEventTech() {
             <Button
               component="label"
               role={undefined}
-              variant="outlined"
+              variant="contained" // Assuming this was the intended variant from previous user requests for upload button
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
-              fullWidth // Added to make it full width like other fields
-              sx={{ mt: 1 }} // Added some margin top
+              fullWidth
+              sx={{ mt: 1 }}
             >
               Upload Poster
               <VisuallyHiddenInput type="file" accept="image/*" onChange={handleFileChange} />
@@ -276,8 +311,8 @@ export default function CreateEventTech() {
           <Button
             type="submit"
             fullWidth
-            variant="outlined"
-            endIcon={<SendIcon />} // Added
+            variant="contained"
+            endIcon={<SendIcon />}
             sx={{ mt: 4 }}
             disabled={loading}
           >

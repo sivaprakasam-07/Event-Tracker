@@ -9,14 +9,15 @@ import {
   InputLabel,
   FormControl,
   CircularProgress,
-  styled, // Added
+  styled,
+  Snackbar, // Added
+  Alert, // Added
 } from "@mui/material";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'; // Added
-import SendIcon from '@mui/icons-material/Send'; // Added
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import SendIcon from '@mui/icons-material/Send';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast, Toaster } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 
 // Added VisuallyHiddenInput
@@ -68,6 +69,9 @@ export default function CreateEventEng() {
   const [poster, setPoster] = useState(null);
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // Added
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Added
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Added
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -78,6 +82,13 @@ export default function CreateEventEng() {
     const file = e.target.files[0];
     setPoster(file);
     setPreview(URL.createObjectURL(file));
+  };
+
+  const handleSnackbarClose = (event, reason) => { // Added
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   const handleSubmit = async (e) => {
@@ -102,7 +113,7 @@ export default function CreateEventEng() {
       const payload = {
         ...eventData,
         posterUrl: uploadedPosterUrl || eventData.posterUrl,
-        eventType: "Eng", // Changed eventType to Eng
+        eventType: "Eng",
       };
 
       const response = await axios.post(
@@ -112,14 +123,23 @@ export default function CreateEventEng() {
       );
 
       if (response.data.success) {
-        toast.success("🎉 Event Created Successfully!");
-        setTimeout(() => navigate("/engineering/events"), 3000); // Changed navigation path
+        // toast.success("🎉 Event Created Successfully!"); // Removed
+        setSnackbarMessage("🎉 Event Created Successfully!"); // Added
+        setSnackbarSeverity("success"); // Added
+        setSnackbarOpen(true); // Added
+        setTimeout(() => navigate("/engineering/events"), 3000);
       } else {
-        toast.error("⚠️ Failed to create event. Please try again!");
+        // toast.error("⚠️ Failed to create event. Please try again!"); // Removed
+        setSnackbarMessage("⚠️ Failed to create event. Please try again!"); // Added
+        setSnackbarSeverity("error"); // Added
+        setSnackbarOpen(true); // Added
       }
     } catch (err) {
       console.error("Event creation failed:", err);
-      toast.error("⚠️ Error creating event.");
+      // toast.error("⚠️ Error creating event."); // Removed
+      setSnackbarMessage("⚠️ Error creating event."); // Added
+      setSnackbarSeverity("error"); // Added
+      setSnackbarOpen(true); // Added
     } finally {
       setLoading(false);
     }
@@ -127,7 +147,19 @@ export default function CreateEventEng() {
 
   return (
     <Container maxWidth="sm" sx={{ pt: 10 }}>
-      <Toaster />
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <Box
         sx={{
           p: 3,

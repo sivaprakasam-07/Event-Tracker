@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 import Particles from "react-tsparticles"; // Added
 import { loadSlim } from "tsparticles-slim"; // Added
+import Button from '@mui/material/Button'; // Added Button
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -171,13 +172,31 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button
+          {/* <button
             type="submit"
             className="w-full py-2 px-4 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition duration-300"
             disabled={loading}
           >
             {loading ? "Signing in..." : "Sign in"}
-          </button>
+          </button> */}
+          <Button
+            type="submit"
+            variant="outlined"
+            fullWidth
+            disabled={loading}
+            sx={{
+              py: 1.2, // Adjusted padding
+              borderColor: 'indigo.500', // Indigo border
+              color: 'indigo.500', // Indigo text
+              '&:hover': {
+                backgroundColor: 'rgba(99, 102, 241, 0.1)', // Light indigo background on hover
+                borderColor: 'indigo.600',
+              },
+              transition: 'background-color 0.3s ease, border-color 0.3s ease',
+            }}
+          >
+            {loading ? "Signing in..." : "Sign in"}
+          </Button>
         </form>
       </motion.div>
     </div>

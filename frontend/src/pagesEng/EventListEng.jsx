@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaExternalLinkAlt, FaTrash, FaChevronDown } from "react-icons/fa";
+import { FaExternalLinkAlt, FaChevronDown } from "react-icons/fa";
+import DeleteIcon from '@mui/icons-material/Delete';
+import Button from '@mui/material/Button';
 import { toast, Toaster } from "react-hot-toast";
 
 function EventList() {
@@ -156,26 +158,44 @@ function EventList() {
                       <FaExternalLinkAlt className="mr-2" /> Event Link
                     </a>
                   )}
-                  <button
+                  <Button
+                    variant="outlined"
+                    size="medium"
                     onClick={() => {
                       setSelectedEvent(event);
                       setModalOpen(true);
                     }}
-                    className="inline-flex items-center bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all"
+                    sx={{
+                      color: 'primary.main',
+                      borderColor: 'primary.main',
+                      '&:hover': {
+                        backgroundColor: 'primary.light',
+                        borderColor: 'primary.dark',
+                      }
+                    }}
                   >
                     View More
-                  </button>
+                  </Button>
                 </div>
                 {user && (
                   (user.role === "masterAdmin" ||
                     user.role === "superAdminEng" ||
                     (user.role.endsWith("EngHod") && user.role.startsWith(event.department))) && (
-                    <button
+                    <Button
+                      variant="outlined"
+                      startIcon={<DeleteIcon />}
                       onClick={() => handleDelete(event._id)}
-                      className="inline-flex items-center bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all"
+                      sx={{
+                        color: 'red',
+                        borderColor: 'red',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                          borderColor: 'darkred',
+                        }
+                      }}
                     >
-                      <FaTrash className="mr-2" /> Delete
-                    </button>
+                      Delete
+                    </Button>
                   )
                 )}
               </div>

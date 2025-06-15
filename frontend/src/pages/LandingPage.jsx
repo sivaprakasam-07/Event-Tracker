@@ -4,6 +4,7 @@ import { useState, useCallback } from "react"; // Added useCallback
 import toast, { Toaster } from 'react-hot-toast';
 import Particles from "react-tsparticles"; // Added
 import { loadSlim } from "tsparticles-slim"; // Added
+import Button from '@mui/material/Button'; // Added Button
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -127,12 +128,24 @@ function LandingPage() {
             whileTap={{ scale: 0.95 }}
             className="mt-8"
           >
-            <button
+            {/* <button
               onClick={handleLoginLogout}
               className="inline-block px-8 py-3 text-lg font-medium text-white bg-indigo-500 rounded-full shadow-md hover:bg-indigo-600 transition duration-300" // Adjusted button colors
             >
               {isLoggedIn ? 'Logout' : 'Login'}
-            </button>
+            </button> */}
+            <Button
+              variant="outlined"
+              onClick={handleLoginLogout}
+              sx={{
+                px: 4, // Adjusted padding
+                fontSize: '1.1rem', // Adjusted font size 
+                boxShadow: 'md',
+                transition: 'background-color 0.3s ease',
+              }}
+            >
+              {isLoggedIn ? 'Logout' : 'Login'}
+            </Button>
           </motion.div>
         </div>
       </motion.div>

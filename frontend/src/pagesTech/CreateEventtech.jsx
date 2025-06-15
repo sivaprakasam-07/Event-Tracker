@@ -1,27 +1,55 @@
+import {
+  Box,
+  Button,
+  Container,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+  InputLabel,
+  FormControl,
+  CircularProgress,
+  styled, // Added
+} from "@mui/material";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'; // Added
+import SendIcon from '@mui/icons-material/Send'; // Added
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
-import { useAuth } from "../context/AuthContext"; // Your custom Auth context
+import { useAuth } from "../context/AuthContext";
 
-function CreateEvent() {
+// Added VisuallyHiddenInput
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
+export default function CreateEventTech() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Role-based department dropdown
-  const departmentOptions = user?.role === "CSETechHod"
-    ? ["CSE"]
-    : user?.role === "CSECyberHod"
-      ? ["CSE-Cyber Security"]
-      : user?.role === "ITTechHod"
-        ? ["IT"]
-        : user?.role === "ADSTechHod"
-          ? ["ADS"]
-          : user?.role === "ECETechHod"
-            ? ["ECE"]
-            : user?.role === "EEETechHod"
-              ? ["EEE"]
-              : ["CSE", "CSE-Cyber Security", "IT", "ADS", "ECE", "EEE"]; // Default for admin
+  const departmentOptions =
+    user?.role === "CSETechHod"
+      ? ["CSE"]
+      : user?.role === "CSECyberHod"
+        ? ["CSE-Cyber Security"]
+        : user?.role === "ITTechHod"
+          ? ["IT"]
+          : user?.role === "ADSTechHod"
+            ? ["ADS"]
+            : user?.role === "ECETechHod"
+              ? ["ECE"]
+              : user?.role === "EEETechHod"
+                ? ["EEE"]
+                : ["CSE", "CSE-Cyber Security", "IT", "ADS", "ECE", "EEE"];
 
   const [eventData, setEventData] = useState({
     title: "",
@@ -32,7 +60,7 @@ function CreateEvent() {
     eventLink: "",
     department: "",
     eligibility: "",
-    posterUrl: "", // Will be filled after image upload
+    posterUrl: "",
   });
 
   const [poster, setPoster] = useState(null);
@@ -53,17 +81,15 @@ function CreateEvent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       let uploadedPosterUrl = "";
 
-      // Upload poster to backend -> Cloudinary
       if (poster) {
         const formData = new FormData();
         formData.append("file", poster);
 
         const uploadResponse = await axios.post(
-          "http://localhost:3000/api/upload/poster", // Ensure this is your working backend route
+          "http://localhost:3000/api/upload/poster",
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -71,11 +97,10 @@ function CreateEvent() {
         uploadedPosterUrl = uploadResponse.data.secure_url;
       }
 
-      // Prepare final payload
       const payload = {
         ...eventData,
         posterUrl: uploadedPosterUrl || eventData.posterUrl,
-        eventType: "Tech", // Added eventType
+        eventType: "Tech",
       };
 
       const response = await axios.post(
@@ -91,7 +116,7 @@ function CreateEvent() {
         toast.error("⚠️ Failed to create event. Please try again!");
       }
     } catch (err) {
-      console.error("Error while creating event:", err);
+      console.error("Event creation failed:", err);
       toast.error("⚠️ Error creating event.");
     } finally {
       setLoading(false);
@@ -99,178 +124,167 @@ function CreateEvent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center pt-20 px-4">
+    <Container maxWidth="sm" sx={{ pt: 10 }}>
       <Toaster />
-      <div className="w-full max-w-2xl bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl p-8">
-        <h2 className="text-3xl font-bold text-center mb-6 text-gray-900">
+      <Box
+        sx={{
+          p: 3,
+          borderRadius: 4,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.2)",
+          background: "rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          border: "1px solid rgba(255, 255, 255, 0.3)",
+        }}
+      >
+        <Typography
+          variant="h5"
+          textAlign="center"
+          fontWeight="bold"
+          color="primary"
+          mb={3}
+        >
           📅 Create New Event
-        </h2>
+        </Typography>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Title
-            </label>
-            <input
-              type="text"
-              name="title"
+        <form onSubmit={handleSubmit} autoComplete="off">
+          <TextField
+            label="Title"
+            name="title"
+            fullWidth
+            margin="normal"
+            required
+            value={eventData.title}
+            onChange={handleChange}
+          />
+
+          <Box display="flex" gap={2}>
+            <TextField
+              label="Date"
+              name="date"
+              type="date"
+              fullWidth
               required
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
-              value={eventData.title}
+              InputLabelProps={{ shrink: true }}
+              value={eventData.date}
               onChange={handleChange}
             />
-          </div>
-
-          {/* Date and Time */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Date
-              </label>
-              <input
-                type="date"
-                name="date"
-                required
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
-                value={eventData.date}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Time
-              </label>
-              <input
-                type="time"
-                name="time"
-                required
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
-                value={eventData.time}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* Venue */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Venue
-            </label>
-            <input
-              type="text"
-              name="venue"
+            <TextField
+              label="Time"
+              name="time"
+              type="time"
+              fullWidth
               required
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
-              value={eventData.venue}
+              InputLabelProps={{ shrink: true }}
+              value={eventData.time}
               onChange={handleChange}
             />
-          </div>
+          </Box>
 
-          {/* Event Link */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Event Link
-            </label>
-            <input
-              type="url"
-              name="eventLink"
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
-              value={eventData.eventLink}
-              onChange={handleChange}
-              placeholder="https://example.com"
-            />
-          </div>
+          <TextField
+            label="Venue"
+            name="venue"
+            fullWidth
+            required
+            margin="normal"
+            value={eventData.venue}
+            onChange={handleChange}
+          />
 
-          {/* Department */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Department
-            </label>
-            <select
+          <TextField
+            label="Event Link"
+            name="eventLink"
+            fullWidth
+            margin="normal"
+            value={eventData.eventLink}
+            onChange={handleChange}
+          />
+
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Department</InputLabel>
+            <Select
               name="department"
-              required
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
               value={eventData.department}
               onChange={handleChange}
+              required
+              label="Department"
             >
-              <option value="">Select Department</option>
               {departmentOptions.map((dept) => (
-                <option key={dept} value={dept}>
+                <MenuItem key={dept} value={dept}>
                   {dept}
-                </option>
+                </MenuItem>
               ))}
-            </select>
-          </div>
+            </Select>
+          </FormControl>
 
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Description
-            </label>
-            <textarea
-              name="description"
-              rows="4"
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
-              value={eventData.description}
-              onChange={handleChange}
-            />
-          </div>
+          <TextField
+            label="Description"
+            name="description"
+            multiline
+            rows={3}
+            fullWidth
+            margin="normal"
+            value={eventData.description}
+            onChange={handleChange}
+          />
 
-          {/* Eligibility */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Eligibility
-            </label>
-            <textarea
-              name="eligibility"
-              rows="2"
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500"
-              value={eventData.eligibility}
-              onChange={handleChange}
-            />
-          </div>
+          <TextField
+            label="Eligibility"
+            name="eligibility"
+            multiline
+            rows={2}
+            fullWidth
+            margin="normal"
+            value={eventData.eligibility}
+            onChange={handleChange}
+          />
 
-          {/* Poster Upload */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Event Poster (Optional)
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              className="mt-1 block w-full text-sm text-gray-500"
-              onChange={handleFileChange}
-            />
-          </div>
+          <Box mt={2}>
+            <Button
+              component="label"
+              role={undefined}
+              variant="outlined"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+              fullWidth // Added to make it full width like other fields
+              sx={{ mt: 1 }} // Added some margin top
+            >
+              Upload Poster
+              <VisuallyHiddenInput type="file" accept="image/*" onChange={handleFileChange} />
+            </Button>
+          </Box>
 
-          {/* Preview */}
           {preview && (
-            <div className="mt-4">
-              <p className="text-sm font-medium text-gray-700 mb-2">
+            <Box mt={2}>
+              <Typography variant="subtitle2" mb={1}>
                 Poster Preview:
-              </p>
+              </Typography>
               <img
                 src={preview}
                 alt="Poster Preview"
-                className="w-full h-40 object-contain rounded-lg border"
+                style={{
+                  width: "100%",
+                  height: "200px",
+                  objectFit: "contain",
+                  borderRadius: "8px",
+                  border: "1px solid #ccc",
+                }}
               />
-            </div>
+            </Box>
           )}
 
-          {/* Submit */}
-          <button
+          <Button
             type="submit"
+            fullWidth
+            variant="outlined"
+            endIcon={<SendIcon />} // Added
+            sx={{ mt: 4 }}
             disabled={loading}
-            className={`w-full ${loading ? "bg-gray-400" : "bg-indigo-600"
-              } text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300`}
           >
-            {loading ? "Creating Event..." : "Create Event"}
-          </button>
+            {loading ? <CircularProgress size={24} color="inherit" /> : "Create Event"}
+          </Button>
         </form>
-      </div>
-    </div>
+      </Box>
+    </Container>
   );
 }
-
-export default CreateEvent;

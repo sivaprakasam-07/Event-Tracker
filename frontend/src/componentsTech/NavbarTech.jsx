@@ -18,7 +18,7 @@ function Navbar() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const navLinkClasses = "block py-2 px-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-indigo-600 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent";
+  const navLinkClasses = "block py-2 px-3 text-blue-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-indigo-600 md:p-0 dark:text-blue-800 md:dark:hover:text-blue dark:hover:bg-blue-700 dark:hover:text-blue md:dark:hover:bg-transparent";
   const activeNavLinkClasses = "block py-2 px-3 text-white bg-indigo-600 rounded md:bg-transparent md:text-indigo-600 md:p-0 dark:text-white"; // Example active style
 
   return (

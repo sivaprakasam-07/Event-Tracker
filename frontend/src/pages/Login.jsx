@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react"; // Added useCallback
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
+import Particles from "react-tsparticles"; // Added
+import { loadSlim } from "tsparticles-slim"; // Added
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -10,6 +12,14 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  const particlesInit = useCallback(async (engine) => {
+    await loadSlim(engine);
+  }, []);
+
+  const particlesLoaded = useCallback(async (container) => {
+    await console.log(container);
+  }, []);
 
   const credentials = [
     { username: "MasterAdmin", password: "masteradmin123", role: "masterAdmin" },
@@ -50,35 +60,112 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-6">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-6 relative">
+      <Particles
+        id="tsparticles"
+        init={particlesInit}
+        loaded={particlesLoaded}
+        options={{
+          background: {
+            color: {
+              value: "#111827",
+            },
+          },
+          fpsLimit: 120,
+          interactivity: {
+            events: {
+              onClick: {
+                enable: true,
+                mode: "push",
+              },
+              onHover: {
+                enable: true,
+                mode: "repulse",
+              },
+              resize: true,
+            },
+            modes: {
+              push: {
+                quantity: 4,
+              },
+              repulse: {
+                distance: 200,
+                duration: 0.4,
+              },
+            },
+          },
+          particles: {
+            color: {
+              value: "#ffffff",
+            },
+            links: {
+              color: "#ffffff",
+              distance: 150,
+              enable: true,
+              opacity: 0.5,
+              width: 1,
+            },
+            collisions: {
+              enable: true,
+            },
+            move: {
+              direction: "none",
+              enable: true,
+              outModes: {
+                default: "bounce",
+              },
+              random: false,
+              speed: 2,
+              straight: false,
+            },
+            number: {
+              density: {
+                enable: true,
+                area: 800,
+              },
+              value: 80,
+            },
+            opacity: {
+              value: 0.5,
+            },
+            shape: {
+              type: "circle",
+            },
+            size: {
+              value: { min: 1, max: 5 },
+            },
+          },
+          detectRetina: true,
+        }}
+      />
       <Toaster />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8"
+        className="w-full max-w-md bg-white/5 backdrop-blur-md shadow-lg rounded-2xl p-8 z-10"
       >
-        <h2 className="text-center text-2xl font-semibold text-gray-900 mb-6">
+        <h2 className="text-center text-2xl font-semibold text-gray-100 mb-6">
           Sign in to your account
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-gray-700 text-sm font-medium">Username</label>
+            <label className="block text-gray-300 text-sm font-medium">Username</label>
             <input
               type="text"
               required
-              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="mt-1 w-full px-4 py-2 border border-gray-700 bg-gray-800 text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Enter your username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium">Password</label>
+            <label className="block text-gray-300 text-sm font-medium">Password</label>
             <input
               type="password"
               required
-              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="mt-1 w-full px-4 py-2 border border-gray-700 bg-gray-800 text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -86,7 +173,7 @@ function Login() {
           </div>
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-blue-700 text-white rounded-lg hover:bg-gray-800 transition duration-300"
+            className="w-full py-2 px-4 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition duration-300"
             disabled={loading}
           >
             {loading ? "Signing in..." : "Sign in"}

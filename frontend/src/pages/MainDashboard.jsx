@@ -1,12 +1,10 @@
-import { useState, useEffect, useCallback } from "react"; // Added useCallback
+import { useCallback } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
-// Removed Swiper imports
-import Particles from "react-tsparticles"; // Added
-import { loadSlim } from "tsparticles-slim"; // Added
-import axios from "axios"; // For API calls
+import Particles from "react-tsparticles";
+import { loadSlim } from "tsparticles-slim";
 
 export default function MainDashboard() {
   const navigate = useNavigate();
@@ -20,10 +18,9 @@ export default function MainDashboard() {
     await console.log(container);
   }, []);
 
-  // 🚀 Handle Navigation Based on Role
   const handleNavigate = (path) => {
     if (user.role === "masterAdmin") {
-      navigate(path); // Master admin has access to all sections
+      navigate(path);
       return;
     }
     if (user.role === "superAdminTech" && path === "/engineering") {
@@ -36,44 +33,27 @@ export default function MainDashboard() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-6 relative">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 relative">
       <Particles
         id="tsparticles-dashboard"
         init={particlesInit}
         loaded={particlesLoaded}
         options={{
-          background: {
-            color: {
-              value: "#111827",
-            },
-          },
+          background: { color: { value: "#111827" } },
           fpsLimit: 120,
           interactivity: {
             events: {
-              onClick: {
-                enable: true,
-                mode: "push",
-              },
-              onHover: {
-                enable: true,
-                mode: "repulse",
-              },
+              onClick: { enable: true, mode: "push" },
+              onHover: { enable: true, mode: "repulse" },
               resize: true,
             },
             modes: {
-              push: {
-                quantity: 4,
-              },
-              repulse: {
-                distance: 200,
-                duration: 0.4,
-              },
+              push: { quantity: 4 },
+              repulse: { distance: 200, duration: 0.4 },
             },
           },
           particles: {
-            color: {
-              value: "#ffffff",
-            },
+            color: { value: "#ffffff" },
             links: {
               color: "#ffffff",
               distance: 150,
@@ -81,66 +61,52 @@ export default function MainDashboard() {
               opacity: 0.5,
               width: 1,
             },
-            collisions: {
-              enable: true,
-            },
+            collisions: { enable: true },
             move: {
               direction: "none",
               enable: true,
-              outModes: {
-                default: "bounce",
-              },
+              outModes: { default: "bounce" },
               random: false,
               speed: 2,
               straight: false,
             },
             number: {
-              density: {
-                enable: true,
-                area: 800,
-              },
+              density: { enable: true, area: 800 },
               value: 80,
             },
-            opacity: {
-              value: 0.5,
-            },
-            shape: {
-              type: "circle",
-            },
-            size: {
-              value: { min: 1, max: 5 },
-            },
+            opacity: { value: 0.5 },
+            shape: { type: "circle" },
+            size: { value: { min: 1, max: 5 } },
           },
           detectRetina: true,
         }}
       />
+
       <Toaster />
-      <div className="backdrop-blur-md bg-white/5 p-10 rounded-2xl shadow-lg text-center w-full max-w-3xl z-10">
-        <h1 className="text-3xl font-bold text-gray-100 mb-6">
-          🎯 Select Your College
-        </h1>
 
-        {/* 🚀 Department Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
-          {/* 🏗️ Engineering Card */}
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="cursor-pointer bg-blue-600 p-6 rounded-xl text-white shadow-md flex items-center justify-center hover:bg-blue-700"
+      {/* 👇 Redesigned Center Card */}
+      <div className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl p-8 rounded-2xl w-full max-w-md z-10 text-center">
+        <h2 className="text-white text-2xl font-bold mb-6">Select Your College</h2>
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+          {/* Engineering Button */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => handleNavigate("/engineering")}
+            className="w-40 py-3 bg-gradient-to-tr from-blue-500 to-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-blue-400 transition-all duration-300"
           >
-            <h2 className="text-2xl font-semibold">🏗️ Engineering</h2>
-          </motion.div>
+            Engineering
+          </motion.button>
 
-          {/* 🧠 Technology Card */}
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="cursor-pointer bg-purple-600 p-6 rounded-xl text-white shadow-md flex items-center justify-center hover:bg-purple-700"
+          {/* Technology Button */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => handleNavigate("/technology")}
+            className="w-40 py-3 bg-gradient-to-tr from-purple-500 to-pink-500 text-white font-semibold rounded-lg shadow-md hover:shadow-pink-400 transition-all duration-300"
           >
-            <h2 className="text-2xl font-semibold">🧠 Technology</h2>
-          </motion.div>
+            Technology
+          </motion.button>
         </div>
       </div>
     </div>

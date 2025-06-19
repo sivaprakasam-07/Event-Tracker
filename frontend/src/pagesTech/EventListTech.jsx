@@ -19,10 +19,35 @@ function EventList() {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const { user } = useAuth();
 
-    const handleDownload = (event) => {
+    const handleDownload = async (event) => {
         const doc = new jsPDF();
-
         doc.text(event.title, 20, 20);
+        let tableStartY = 30;
+
+        if (event.posterUrl) {
+            try {
+                const response = await fetch(event.posterUrl);
+                const blob = await response.blob();
+                const base64data = await new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(blob);
+                });
+
+                const img = new Image();
+                img.src = base64data;
+                await new Promise(resolve => { img.onload = resolve; });
+
+                const imgWidth = 170;
+                const imgHeight = (img.height * imgWidth) / img.width;
+                doc.addImage(base64data, 'JPEG', 20, 30, imgWidth, imgHeight);
+                tableStartY = 30 + imgHeight + 10;
+
+            } catch (error) {
+                console.error("Error adding poster to PDF:", error);
+                toast.error("⚠️ Could not add poster to PDF.");
+            }
+        }
 
         const tableColumn = ["Field", "Value"];
         const tableRows = [];
@@ -44,8 +69,9 @@ function EventList() {
         autoTable(doc, {
             head: [tableColumn],
             body: tableRows,
-            startY: 30,
+            startY: tableStartY,
         });
+
         doc.save(`${event.title}.pdf`);
         toast.success("📄 Event details downloaded!");
     };
@@ -170,11 +196,11 @@ function EventList() {
                             className="bg-white/50 backdrop-blur-lg shadow-lg rounded-2xl p-6 border border-gray-200"
                         >
                             <h3 className="text-2xl font-semibold text-gray-900 mb-2">{event.title}</h3>
-                            <p className="text-gray-700"><strong>📅 Date:</strong> {event.date}</p>
-                            <p className="text-gray-700"><strong>⏰ Time:</strong> {event.time}</p>
-                            <p className="text-gray-700"><strong>📍 Venue:</strong> {event.venue}</p>
-                            <p className="text-gray-700"><strong>🏛 Department:</strong> {event.department}</p>
-                            <p className="text-gray-700"><strong>🎓 Eligibility:</strong> {event.eligibility}</p>
+                            <p className="text-gray-700"><strong>Date:</strong> {event.date}</p>
+                            <p className="text-gray-700"><strong>Time:</strong> {event.time}</p>
+                            <p className="text-gray-700"><strong>Venue:</strong> {event.venue}</p>
+                            <p className="text-gray-700"><strong>Department:</strong> {event.department}</p>
+                            <p className="text-gray-700"><strong>Eligibility:</strong> {event.eligibility}</p>
                             <p className="text-gray-600 mt-2">{event.description}</p>
 
                             <div className="mt-4 flex justify-between items-center">
@@ -189,15 +215,6 @@ function EventList() {
                                             <FaExternalLinkAlt className="mr-2" /> Event Link
                                         </a>
                                     )}
-                                    {/* <button
-                                        onClick={() => {
-                                            setSelectedEvent(event);
-                                            setModalOpen(true);
-                                        }}
-                                        className="inline-flex items-center bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all"
-                                    >
-                                        View More
-                                    </button> */}
                                     <Button
                                         variant="outlined"
                                         size="medium"

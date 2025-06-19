@@ -19,10 +19,35 @@ function EventList() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const { user } = useAuth();
 
-  const handleDownload = (event) => {
+  const handleDownload = async (event) => {
     const doc = new jsPDF();
-
     doc.text(event.title, 20, 20);
+    let tableStartY = 30;
+
+    if (event.posterUrl) {
+      try {
+        const response = await fetch(event.posterUrl);
+        const blob = await response.blob();
+        const base64data = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+
+        const img = new Image();
+        img.src = base64data;
+        await new Promise(resolve => { img.onload = resolve; });
+
+        const imgWidth = 170;
+        const imgHeight = (img.height * imgWidth) / img.width;
+        doc.addImage(base64data, 'JPEG', 20, 30, imgWidth, imgHeight);
+        tableStartY = 30 + imgHeight + 10;
+
+      } catch (error) {
+        console.error("Error adding poster to PDF:", error);
+        toast.error("⚠️ Could not add poster to PDF.");
+      }
+    }
 
     const tableColumn = ["Field", "Value"];
     const tableRows = [];
@@ -44,8 +69,9 @@ function EventList() {
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
-      startY: 30,
+      startY: tableStartY,
     });
+
     doc.save(`${event.title}.pdf`);
     toast.success("📄 Event details downloaded!");
   };

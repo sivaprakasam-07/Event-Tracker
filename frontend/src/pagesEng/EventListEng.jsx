@@ -6,6 +6,8 @@ import { FaExternalLinkAlt, FaChevronDown } from "react-icons/fa";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
 import { toast, Toaster } from "react-hot-toast";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function EventList() {
   const [events, setEvents] = useState([]);
@@ -16,6 +18,37 @@ function EventList() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const { user } = useAuth();
+
+  const handleDownload = (event) => {
+    const doc = new jsPDF();
+
+    doc.text(event.title, 20, 20);
+
+    const tableColumn = ["Field", "Value"];
+    const tableRows = [];
+
+    const eventData = [
+      { field: "Date", value: event.date },
+      { field: "Time", value: event.time },
+      { field: "Venue", value: event.venue },
+      { field: "Department", value: event.department },
+      { field: "Eligibility", value: event.eligibility },
+      { field: "Description", value: event.description },
+    ];
+
+    eventData.forEach(data => {
+      const text = doc.splitTextToSize(data.value || '', 150);
+      tableRows.push([data.field, text]);
+    });
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 30,
+    });
+    doc.save(`${event.title}.pdf`);
+    toast.success("📄 Event details downloaded!");
+  };
 
   // Fetch events from the backend
   const getEvents = async () => {
@@ -79,7 +112,7 @@ function EventList() {
         transition={{ duration: 0.5 }}
         className="text-4xl font-bold text-center text-gray-900 mb-8"
       >
-        Upcoming Events 📅
+        Upcoming Events
       </motion.h2>
 
       {/* Custom Dropdown */}
@@ -139,11 +172,11 @@ function EventList() {
               className="bg-white/50 backdrop-blur-lg shadow-lg rounded-2xl p-6 border border-gray-200"
             >
               <h3 className="text-2xl font-semibold text-gray-900 mb-2">{event.title}</h3>
-              <p className="text-gray-700"><strong>📅 Date:</strong> {event.date}</p>
-              <p className="text-gray-700"><strong>⏰ Time:</strong> {event.time}</p>
-              <p className="text-gray-700"><strong>📍 Venue:</strong> {event.venue}</p>
-              <p className="text-gray-700"><strong>🏛 Department:</strong> {event.department}</p>
-              <p className="text-gray-700"><strong>🎓 Eligibility:</strong> {event.eligibility}</p>
+              <p className="text-gray-700"><strong>Date:</strong> {event.date}</p>
+              <p className="text-gray-700"><strong>Time:</strong> {event.time}</p>
+              <p className="text-gray-700"><strong>Venue:</strong> {event.venue}</p>
+              <p className="text-gray-700"><strong>Department:</strong> {event.department}</p>
+              <p className="text-gray-700"><strong>Eligibility:</strong> {event.eligibility}</p>
               <p className="text-gray-600 mt-2">{event.description}</p>
 
               <div className="mt-4 flex justify-between items-center">
@@ -175,6 +208,21 @@ function EventList() {
                     }}
                   >
                     View More
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="medium"
+                    onClick={() => handleDownload(event)}
+                    sx={{
+                      color: 'green',
+                      borderColor: 'green',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 128, 0, 0.1)',
+                        borderColor: 'darkgreen',
+                      }
+                    }}
+                  >
+                    Download
                   </Button>
                 </div>
                 {user && (
@@ -229,11 +277,11 @@ function EventList() {
                 className="w-full h-auto object-contain rounded-lg border mb-4 shadow-md"
               />
             )}
-            <p className="text-gray-700 mb-1"><strong>📅 Date:</strong> {selectedEvent.date}</p>
-            <p className="text-gray-700 mb-1"><strong>⏰ Time:</strong> {selectedEvent.time}</p>
-            <p className="text-gray-700 mb-1"><strong>📍 Venue:</strong> {selectedEvent.venue}</p>
-            <p className="text-gray-700 mb-1"><strong>🏛 Department:</strong> {selectedEvent.department}</p>
-            <p className="text-gray-700 mb-3"><strong>🎓 Eligibility:</strong> {selectedEvent.eligibility}</p>
+            <p className="text-gray-700 mb-1"><strong>Date:</strong> {selectedEvent.date}</p>
+            <p className="text-gray-700 mb-1"><strong>Time:</strong> {selectedEvent.time}</p>
+            <p className="text-gray-700 mb-1"><strong>Venue:</strong> {selectedEvent.venue}</p>
+            <p className="text-gray-700 mb-1"><strong>Department:</strong> {selectedEvent.department}</p>
+            <p className="text-gray-700 mb-3"><strong>Eligibility:</strong> {selectedEvent.eligibility}</p>
             <p className="text-gray-600 mt-2 mb-4 whitespace-pre-wrap">{selectedEvent.description}</p>
 
             {selectedEvent.eventLink && (

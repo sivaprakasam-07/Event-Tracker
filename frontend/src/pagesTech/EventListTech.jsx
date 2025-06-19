@@ -6,6 +6,8 @@ import { FaExternalLinkAlt, FaChevronDown } from "react-icons/fa";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
 import { toast, Toaster } from "react-hot-toast";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function EventList() {
     const [events, setEvents] = useState([]);
@@ -16,6 +18,37 @@ function EventList() {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const { user } = useAuth();
+
+    const handleDownload = (event) => {
+        const doc = new jsPDF();
+
+        doc.text(event.title, 20, 20);
+
+        const tableColumn = ["Field", "Value"];
+        const tableRows = [];
+
+        const eventData = [
+            { field: "Date", value: event.date },
+            { field: "Time", value: event.time },
+            { field: "Venue", value: event.venue },
+            { field: "Department", value: event.department },
+            { field: "Eligibility", value: event.eligibility },
+            { field: "Description", value: event.description },
+        ];
+
+        eventData.forEach(data => {
+            const text = doc.splitTextToSize(data.value || '', 150);
+            tableRows.push([data.field, text]);
+        });
+
+        autoTable(doc, {
+            head: [tableColumn],
+            body: tableRows,
+            startY: 30,
+        });
+        doc.save(`${event.title}.pdf`);
+        toast.success("📄 Event details downloaded!");
+    };
 
     // Fetch events from the backend
     const getEvents = async () => {
@@ -182,6 +215,21 @@ function EventList() {
                                         }}
                                     >
                                         View More
+                                    </Button>
+                                    <Button
+                                        variant="outlined"
+                                        size="medium"
+                                        onClick={() => handleDownload(event)}
+                                        sx={{
+                                            color: 'green',
+                                            borderColor: 'green',
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(0, 128, 0, 0.1)',
+                                                borderColor: 'darkgreen',
+                                            }
+                                        }}
+                                    >
+                                        Download
                                     </Button>
                                 </div>
                                 {user && (

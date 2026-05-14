@@ -1,4 +1,18 @@
 <img width="1918" height="981" alt="image" src="https://github.com/user-attachments/assets/deb1a603-1f3d-460a-8456-3afefbc9be43" />
+<img width="1918" height="977" alt="image" src="https://github.com/user-attachments/assets/55c48b8f-c58d-4d8b-a890-b587d4cf08e0" />
+<img width="1918" height="976" alt="image" src="https://github.com/user-attachments/assets/8779d900-8c92-4af7-959b-0f3d06deb62a" />
+<img width="1918" height="981" alt="image" src="https://github.com/user-attachments/assets/a80bbf25-0192-43cd-85d3-35b59ca0883c" />
+<img width="1918" height="977" alt="image" src="https://github.com/user-attachments/assets/678d5786-fa74-49f7-afc7-7c1bf81c404a" />
+<img width="1918" height="977" alt="image" src="https://github.com/user-attachments/assets/82eb24ad-ad4a-435e-b894-0ce4d494cfb4" />
+<img width="1918" height="977" alt="image" src="https://github.com/user-attachments/assets/e66a21ee-5b43-42fc-83d5-5157cdbd159b" />
+<img width="1918" height="977" alt="image" src="https://github.com/user-attachments/assets/03fcc599-243d-481f-a27c-5d3126f32e92" />
+
+
+
+
+
+
+
 # 🎯 Event Tracker System
 
 A modern, role-based Event Management Platform built to streamline event creation, management, and monitoring for multiple departments within an institution. The system provides separate dashboards and permissions for admins, department heads, and users with secure authentication and real-time event handling.

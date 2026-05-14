@@ -1,3 +1,4 @@
+<img width="1918" height="981" alt="image" src="https://github.com/user-attachments/assets/deb1a603-1f3d-460a-8456-3afefbc9be43" />
 # 🎯 Event Tracker System
 
 A modern, role-based Event Management Platform built to streamline event creation, management, and monitoring for multiple departments within an institution. The system provides separate dashboards and permissions for admins, department heads, and users with secure authentication and real-time event handling.
